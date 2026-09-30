@@ -1,0 +1,711 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Kuis 3 Infovis · Harga Interaksi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Work+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
+<style>
+/* Layout: GIGA "hall" lecture theme (light only) — paper page, square panels with lift shadow, Sora display + Work Sans body, blue-deep leads. */
+:root{
+  --paper:#F6F8FB; --canvas:#FFFFFF; --panel:#EAF0F7; --line:#D8E1EC; --line-strong:#BECDDE;
+  --ink:#101827; --ink-soft:#3D4A63; --muted:#6E7C93;
+  --blue:#2277B0; --blue-bright:#2C97DE; --slate:#395082; --wash:rgba(34,119,176,0.10);
+  --green:#0C8A25; --gold:#A9760A; --gold-bright:#FFCF4B; --red:#C22426; --red-bright:#E03D3C; --cloud:#ECF0F1;
+  --lift:0 14px 34px rgba(23,45,80,0.11); --halo:0 0 0 1px rgba(34,119,176,0.24),0 6px 22px rgba(34,119,176,0.16);
+  --ok:#0C8A25; --ok-soft:#E3F3E6; --bad:#C22426; --bad-soft:#FBE7E6; --warm-soft:#FBF1DC;
+  --k-red:#C22426; --k-blue:#2277B0; --k-yellow:#A9760A; --k-green:#0C8A25;
+  --display:"Sora","Work Sans",-apple-system,system-ui,sans-serif;
+  --body:"Work Sans",-apple-system,system-ui,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --ease:cubic-bezier(.2,.8,.2,1);
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;padding-inline:16px;padding-block:0 64px}
+.wrap{max-width:880px;margin:0 auto}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;line-height:1.1;margin:0;color:var(--ink)}
+h2{font-size:clamp(26px,4.4vw,36px);font-weight:800;letter-spacing:-.025em}
+h3{font-size:19px;font-weight:700;letter-spacing:-.01em}
+p{margin:0}
+.mono{font-family:var(--mono)}
+.eyebrow{font-family:var(--body);font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--blue)}
+button{font:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:2px solid var(--blue-bright);outline-offset:2px}
+
+/* progress rule + brand bar (as on the lecture page) */
+.progress{position:fixed;top:0;left:0;right:0;height:3px;background:var(--line);z-index:90}
+.progress i{display:block;height:100%;background:var(--blue);transform:scaleX(0);transform-origin:left;transition:transform 90ms linear}
+.brand{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:22px 0}
+.brand .mark{width:30px;height:30px;flex:0 0 auto}
+.brand .code{font-family:var(--display);font-weight:800;font-size:13px;line-height:1.15}
+.brand .code small{display:block;font-family:var(--body);font-weight:600;font-size:10.5px;letter-spacing:.14em;color:var(--muted)}
+
+/* header + nav */
+header.top{padding-block:40px 24px;display:grid;gap:14px}
+header.top h1{font-size:clamp(34px,6.4vw,54px);font-weight:800;letter-spacing:-.03em}
+header.top h1 .hl{color:var(--blue)}
+.lede{max-width:62ch;color:var(--ink-soft);font-size:18px}
+.scope{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font-size:12.5px;font-weight:600;padding:5px 10px;border:1px solid var(--line);background:var(--canvas);color:var(--ink-soft)}
+nav.jump{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--paper) 86%,transparent);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line);margin-inline:-16px;padding:10px 16px;overflow-x:auto;white-space:nowrap}
+nav.jump a{display:inline-block;font-size:13.5px;font-weight:500;color:var(--ink-soft);text-decoration:none;padding:5px 10px;margin-right:2px;border-bottom:2px solid transparent}
+nav.jump a:hover{color:var(--blue);border-bottom-color:var(--blue)}
+nav.jump a.go{background:var(--blue);color:#fff;border-bottom-color:var(--blue)}
+
+section.sec{padding-block:56px 8px;display:grid;gap:20px;scroll-margin-top:60px}
+.sec-head{display:grid;gap:8px}
+.sheet{background:var(--canvas);border:1px solid var(--line);box-shadow:var(--lift);padding:22px}
+.prose{display:grid;gap:10px;max-width:66ch}
+.prose ul{margin:0;padding-left:20px;display:grid;gap:6px}
+.claim{background:var(--canvas);border:1px solid var(--line);border-left:3px solid var(--blue);padding:18px 22px;font-size:17px;box-shadow:var(--lift);display:grid;gap:8px}
+.claim b{font-family:var(--display);font-weight:700}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.card{background:var(--panel);border:1px solid var(--line);padding:18px;display:grid;gap:8px;align-content:start;min-width:0}
+.card .tag{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--blue)}
+.num{font-family:var(--display);font-variant-numeric:tabular-nums;font-weight:700}
+.src{font-size:13px;color:var(--muted)}
+.bignum{font-family:var(--display);font-weight:800;letter-spacing:-.02em;font-size:30px;color:var(--blue)}
+
+/* Gi / Ga dialogue chips */
+.dlg{display:grid;gap:10px}
+.say{display:grid;grid-template-columns:36px minmax(0,1fr);gap:12px;align-items:start}
+.say .who{width:36px;height:36px;display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:13px;color:#fff}
+.say.gi .who{background:var(--red)} .say.ga .who{background:var(--blue)}
+.say p{background:var(--canvas);border:1px solid var(--line);padding:10px 14px}
+.say.gi p{border-left:3px solid var(--red)} .say.ga p{border-left:3px solid var(--blue)}
+
+/* ladder */
+.ladder{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:22px;align-items:end}
+@media (max-width:640px){.ladder{grid-template-columns:1fr}}
+.rungs{display:flex;flex-direction:column-reverse;gap:6px}
+.rung{display:flex;align-items:center;gap:12px;border:1px solid var(--line);background:var(--panel);padding:10px 12px;text-align:left;color:var(--ink);transition:background .2s var(--ease),border-color .2s var(--ease)}
+.rung:nth-child(1){margin-right:45%}.rung:nth-child(2){margin-right:30%}.rung:nth-child(3){margin-right:15%}
+.rung .n{font-family:var(--display);font-weight:800;font-size:22px;width:24px;color:var(--muted)}
+.rung.on{border-color:var(--blue);background:var(--wash);box-shadow:var(--halo)}
+.rung.on .n{color:var(--blue)}
+.rung[data-r="1"].on{border-color:var(--green);background:var(--ok-soft);box-shadow:none}
+.rung[data-r="1"].on .n{color:var(--green)}
+.rung[data-r="4"].on{border-color:var(--red);background:var(--bad-soft);box-shadow:none}
+.rung[data-r="4"].on .n{color:var(--red)}
+.rung small{display:block;font-size:12px;color:var(--muted)}
+.rung-detail{min-height:170px}
+
+/* loops */
+.loops{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:640px){.loops{grid-template-columns:1fr}}
+.loop{border:1px solid var(--line);background:var(--canvas);box-shadow:var(--lift);padding:16px;text-align:left;color:var(--ink);display:grid;gap:6px;align-content:start}
+.loop .t{font-size:11px;font-weight:700;letter-spacing:.14em;color:var(--gold)}
+.loop .hid{color:var(--ink-soft);font-size:14.5px}
+.loop[aria-expanded="true"]{border-color:var(--blue)}
+
+/* calculators */
+.calc{display:grid;gap:14px;background:var(--canvas);box-shadow:var(--lift)}
+.ctrl{display:grid;gap:6px}
+.ctrl label{font-size:14px;color:var(--ink-soft);display:flex;justify-content:space-between;gap:8px}
+input[type=range]{width:100%;accent-color:var(--blue)}
+.presets{display:flex;flex-wrap:wrap;gap:6px}
+.presets button,.seg button{border:1px solid var(--line-strong);background:var(--canvas);color:var(--ink);padding:5px 10px;font-size:13.5px}
+.presets button:hover,.seg button:hover{border-color:var(--blue);color:var(--blue)}
+.seg{display:inline-flex;flex-wrap:wrap;gap:6px}
+.seg button[aria-pressed="true"]{background:var(--blue);color:#fff;border-color:var(--blue)}
+.readout{font-size:15px;background:var(--panel);border-left:3px solid var(--blue);padding:12px 14px;font-variant-numeric:tabular-nums}
+.readout b{font-family:var(--display);font-size:22px;color:var(--blue)}
+.chartbox{overflow-x:auto}
+svg text{font-family:var(--body);font-size:11px;fill:var(--muted)}
+
+/* table */
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14.5px;min-width:520px}
+th,td{text-align:left;padding:10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);font-weight:700;border-bottom:2px solid var(--line-strong)}
+td:first-child{font-weight:600}
+
+/* complexity */
+.gauge-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:560px){.gauge-row{grid-template-columns:1fr}}
+.gauge{border:1px solid var(--line);padding:22px;background:var(--panel);box-shadow:var(--lift);display:grid;gap:6px}
+.gauge .big{font-family:var(--display);font-weight:800;font-size:38px;line-height:1;letter-spacing:-.02em;color:var(--ink)}
+.gauge .arrow{font-size:13px;color:var(--green);font-weight:600}
+.sorter{display:grid;gap:12px}
+.case{border:1px solid var(--line);background:var(--panel);padding:16px;display:grid;gap:10px}
+.case .fb{font-size:14.5px;padding:8px 12px}
+.case .fb.ok{background:var(--ok-soft);color:var(--ok);border-left:3px solid var(--ok)}
+.case .fb.no{background:var(--bad-soft);color:var(--bad);border-left:3px solid var(--bad)}
+.case .seg button.right{background:var(--green);border-color:var(--green);color:#fff}
+.case .seg button.wrong{background:var(--red);border-color:var(--red);color:#fff}
+
+/* rules */
+.rules{display:grid;gap:8px}
+.rule{display:grid;grid-template-columns:44px minmax(0,1fr);gap:12px;align-items:start;background:var(--canvas);border:1px solid var(--line);padding:14px}
+.rule .k{font-family:var(--display);font-weight:800;font-size:22px;color:var(--blue)}
+
+/* flashcards */
+.flash{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px}
+.fc{perspective:800px;border:0;background:none;padding:0;height:132px;color:var(--ink);text-align:left}
+.fc .in{position:relative;width:100%;height:100%;transition:transform .45s var(--ease);transform-style:preserve-3d}
+.fc.flip .in{transform:rotateY(180deg)}
+.fc .f,.fc .b{position:absolute;inset:0;backface-visibility:hidden;border:1px solid var(--line);padding:14px;display:flex;flex-direction:column;justify-content:space-between}
+.fc .f{background:var(--canvas);box-shadow:var(--lift)}
+.fc .f .v{font-family:var(--display);font-weight:800;font-size:28px;letter-spacing:-.02em;color:var(--blue)}
+.fc .b{background:var(--blue);border-color:var(--blue);color:#fff;transform:rotateY(180deg);font-size:14px;line-height:1.4}
+.fc .hint{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+
+/* ===== Kahoot drill, hall palette ===== */
+#latihan .stage{background:var(--canvas);border:1px solid var(--line);box-shadow:var(--lift);padding:22px;display:grid;gap:16px;min-height:420px;border-top:3px solid var(--blue)}
+.k-top{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:13px;font-weight:600;flex-wrap:wrap}
+.k-pill{background:var(--panel);border:1px solid var(--line);padding:4px 12px;color:var(--ink-soft);font-variant-numeric:tabular-nums}
+.k-pill.clock{background:var(--blue);border-color:var(--blue);color:#fff;font-family:var(--display);font-weight:800;min-width:44px;text-align:center}
+.k-q{background:var(--panel);border:1px solid var(--line);padding:22px;font-family:var(--display);font-weight:700;font-size:clamp(18px,3.2vw,24px);letter-spacing:-.01em;line-height:1.25;text-align:center;min-height:90px;display:flex;align-items:center;justify-content:center;color:var(--ink)}
+.k-timer{height:6px;background:var(--line);overflow:hidden}
+.k-timer i{display:block;height:100%;width:100%;background:var(--gold-bright);transform-origin:left;transition:transform .1s linear}
+.k-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:560px){.k-opts{grid-template-columns:1fr}}
+.k-opt{display:flex;align-items:center;gap:12px;border:0;padding:14px 16px;min-height:74px;text-align:left;font-weight:600;font-size:15.5px;line-height:1.3;color:#fff;box-shadow:0 4px 0 rgba(16,24,39,.25);transition:transform .08s,opacity .2s}
+.k-opt:active{transform:translateY(2px)}
+.k-opt svg{flex:0 0 26px;width:26px;height:26px}
+.k-opt svg *{fill:#fff}
+.k-opt.c0{background:var(--k-red)}.k-opt.c1{background:var(--k-blue)}.k-opt.c2{background:var(--k-yellow)}.k-opt.c3{background:var(--k-green)}
+.k-opt.dim{opacity:.25}
+.k-opt.correct{outline:3px solid var(--ink);outline-offset:3px}
+.k-res{padding:14px 16px;display:grid;gap:6px;border-left:3px solid}
+.k-res.ok{background:var(--ok-soft);border-color:var(--ok)}.k-res.no{background:var(--bad-soft);border-color:var(--bad)}.k-res.late{background:var(--warm-soft);border-color:var(--gold)}
+.k-res .h{font-family:var(--display);font-weight:800;font-size:20px}
+.k-res.ok .h{color:var(--ok)}.k-res.no .h{color:var(--bad)}.k-res.late .h{color:var(--gold)}
+.k-btn{background:var(--blue);color:#fff;border:0;padding:12px 20px;font-weight:700;font-family:var(--display);font-size:15px;box-shadow:var(--halo)}
+.k-btn:hover{background:var(--slate)}
+.k-btn.ghost{background:transparent;color:var(--blue);border:1px solid var(--blue);box-shadow:none}
+.k-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.k-start{display:grid;gap:16px;align-content:center;text-align:center;justify-items:center;padding-block:20px}
+.k-start h3{font-size:clamp(28px,5vw,40px);font-weight:800;letter-spacing:-.03em}
+.k-start p{max-width:52ch;color:var(--ink-soft)}
+.k-set{display:grid;gap:6px;justify-items:center}
+.k-seg{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.k-seg button{background:var(--canvas);border:1px solid var(--line-strong);padding:6px 12px;font-size:14px;color:var(--ink)}
+.k-seg button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.k-score{font-family:var(--display);font-weight:800;font-size:60px;line-height:1;letter-spacing:-.03em;color:var(--blue)}
+.review{display:grid;gap:8px;text-align:left;width:100%}
+.review .it{background:var(--panel);border-left:3px solid var(--red);padding:10px 12px;font-size:14.5px}
+.review .it b{color:var(--blue)}
+.foot{margin-top:56px;font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:16px}
+@media (prefers-reduced-motion: reduce){*{transition:none !important}}
+
+/* language switch */
+:root:not([data-lang="en"]) body [lang="en"]{display:none!important}
+:root[data-lang="en"] body [lang="id"]{display:none!important}
+.langsw{display:inline-flex;border:1px solid var(--line-strong);background:var(--canvas)}
+.langsw button{border:0;background:transparent;color:var(--ink-soft);font-family:var(--display);font-weight:700;font-size:13px;letter-spacing:.06em;padding:7px 12px;min-width:44px}
+.langsw button[aria-pressed="true"]{background:var(--blue);color:#fff}
+.langsw button:not([aria-pressed="true"]):hover{color:var(--blue)}
+
+/* plain-language explainer boxes */
+.eli{background:var(--warm-soft);border:1px solid #EBD7A8;border-left:3px solid var(--gold);padding:14px 16px;display:grid;gap:8px;font-size:15.5px}
+.eli .eyebrow{color:var(--gold)}
+.eli ul{margin:0;padding-left:20px;display:grid;gap:5px}
+.eli .ex{font-family:var(--mono);font-size:13.5px;background:var(--canvas);border:1px solid #EBD7A8;padding:8px 10px;overflow-x:auto}
+</style>
+
+<div class="progress" aria-hidden="true"><i id="prog"></i></div>
+<div class="wrap">
+<div class="brand">
+  <div class="code">EA234506<small>INFORMATION VISUALIZATION · GIGA</small></div>
+  <div class="langsw" role="group" aria-label="Bahasa / Language">
+    <button id="lang-id" data-set-lang="id" aria-pressed="true">ID</button><button id="lang-en" data-set-lang="en" aria-pressed="false">EN</button>
+  </div>
+</div>
+<header class="top">
+  <div class="eyebrow"><span lang="id">EA234506 Visualisasi Informasi · Minggu 05 · Persiapan Kuis 3</span><span lang="en">EA234506 Information Visualization · Week 05 · Quiz 3 prep</span></div>
+  <h1><span lang="id">Setiap interaksi punya <span class="hl">harga</span>.</span><span lang="en">Every interaction has a <span class="hl">price</span>.</span></h1>
+  <p class="lede"><span lang="id">Rangkuman interaktif dari slide "The Price of Interaction" dan halaman kuliah Interaction, Layout, and View Complexity (Ware Bab 10). Baca bagian rangkuman, coba kalkulatornya, lalu latih diri di mode Kahoot di bawah.</span><span lang="en">An interactive summary of the "The Price of Interaction" slides and the Interaction, Layout, and View Complexity lecture page (Ware Ch. 10). Read the summary, try the calculators, then drill yourself in Kahoot mode below.</span></p>
+  <div class="scope">
+    <span class="chip"><span lang="id">Kahoot · 12 soal</span><span lang="en">Kahoot · 12 items</span></span>
+    <span class="chip"><span lang="id">≥3 soal: layout / menu / view?</span><span lang="en">≥3 items: layout / menu / view?</span></span>
+    <span class="chip"><span lang="id">Hanya materi minggu 5</span><span lang="en">Week 5 material only</span></span>
+    <span class="chip"><span lang="id">Bobot 5%</span><span lang="en">Weight 5%</span></span>
+  </div>
+</header>
+
+<nav class="jump" aria-label="Sections">
+  <a href="#inti"><span lang="id">Ide inti</span><span lang="en">Key idea</span></a><a href="#loop"><span lang="id">3 loop</span><span lang="en">3 loops</span></a><a href="#hick">Hick–Hyman</a><a href="#fitts">Fitts</a><a href="#memori">Eyes beat memory</a><a href="#fokus">Focus+context</a><a href="#linking">Brushing</a><a href="#kompleks"><span lang="id">3 kompleksitas</span><span lang="en">3 complexities</span></a><a href="#aturan"><span lang="id">Aturan layout</span><span lang="en">Layout rules</span></a><a href="#modal">Multimodal</a><a href="#angka"><span lang="id">Angka wajib</span><span lang="en">Key numbers</span></a><a href="#latihan" class="go"><span lang="id">Latihan Kahoot ▸</span><span lang="en">Kahoot practice ▸</span></a>
+</nav>
+
+<!-- 1 -->
+<section class="sec" id="inti">
+  <div class="sec-head"><div class="eyebrow"><span lang="id">A · Kenapa kita berinteraksi</span><span lang="en">A · Why we interact at all</span></div><h2><span lang="id">Interaksi adalah cara bertanya</span><span lang="en">Interaction is a way of asking</span></h2></div>
+  <div class="claim"><div class="eyebrow"><span lang="id">Klaim sesi ini</span><span lang="en">The claim of this session</span></div>
+    <p lang="id">Di display yang tidak bisa dioperasikan, <b>mata adalah satu-satunya input device</b>. Setiap interaksi yang ingin ditambahkan desainer adalah pertanyaan yang gagal dijawab layout sendiri, dan pertanyaan yang tak terjawab berubah jadi <i>visual search</i> yang harus dikerjakan pembaca.</p>
+    <p lang="en">In a display that cannot be operated, <b>the eye is the only input device</b>. Every interaction a designer would have added is a question the layout must now answer on its own, and every question left unanswered becomes a <i>visual search</i> the reader has to carry out.</p></div>
+  <div class="dlg">
+    <div class="say gi"><span class="who">GI</span><p><span lang="id">Tugas Kelompok 2 melarang interaksi. Kenapa harus belajar hover, zoom, brush, dan filter?</span><span lang="en">Group Assignment 2 forbids interaction. Why study hover, zoom, brush and filter at all?</span></p></div>
+    <div class="say ga"><span class="who">GA</span><p><span lang="id">Karena tiap teknik itu adalah pertanyaan yang ingin diajukan pembaca. Kalau kontrolnya tidak ada, layout harus menjawabnya duluan. Hari ini kita menghitung harga tiap pertanyaan supaya bisa dibayar di muka.</span><span lang="en">Because each of them is a question a reader wanted to ask. Without a control, your layout has to answer it first. Today we price each question so you can pay it in advance.</span></p></div>
+  </div>
+  <div class="prose" lang="id">
+    <p><b>Epistemic action</b> (Kirsh &amp; Maglio, 1994): tindakan untuk <i>mengungkap informasi</i>, bukan mengubah dunia. Klik = "ini apa?", hover = "nilai persisnya berapa?", filter = "tampilkan yang penting saja", scroll = "sisa datanya di mana?".</p>
+    <p>Ware mengurutkan cara mendapat info tambahan dari yang termurah ke termahal, yaitu <b>drill-down epistemic-action cost hierarchy</b>, ide kunci minggu ini. Klik tiap anak tangga:</p>
+  </div>
+  <div class="prose" lang="en">
+    <p><b>Epistemic action</b> (Kirsh &amp; Maglio, 1994): an action taken to <i>uncover information</i> rather than to change the world. Click = "what is this?", hover = "what's the exact value?", filter = "show only what matters", scroll = "where's the rest?".</p>
+    <p>Ware ranks the ways of getting more information from cheapest to most expensive: the <b>drill-down epistemic-action cost hierarchy</b>, the key idea of the week. Click each rung:</p>
+  </div>
+  <div class="sheet ladder">
+    <div class="rungs" role="group" aria-label="Cost ladder">
+      <button class="rung on" data-r="1"><span class="n">1</span><span>Eye fixation<small><span lang="id">≈3 per detik</span><span lang="en">≈3 per second</span></small></span></button>
+      <button class="rung" data-r="2"><span class="n">2</span><span>Hover<small><span lang="id">≈1 per detik</span><span lang="en">≈1 per second</span></small></span></button>
+      <button class="rung" data-r="3"><span class="n">3</span><span><span lang="id">Klik buka / tutup</span><span lang="en">Click to open / close</span><small><span lang="id">satu tiap beberapa detik</span><span lang="en">one every few seconds</span></small></span></button>
+      <button class="rung" data-r="4"><span class="n">4</span><span><span lang="id">Klik ke layar baru</span><span lang="en">Click to a new screen</span><small><span lang="id">konteks hilang</span><span lang="en">context is lost</span></small></span></button>
+    </div>
+    <div class="rung-detail prose" id="rungDetail" aria-live="polite"></div>
+  </div>
+  <div class="grid2">
+    <div class="card"><div class="tag">G10.21</div><p><span lang="id">Pilih aksi berbiaya paling rendah, <i>asal</i> informasi yang terungkap cukup untuk tugasnya.</span><span lang="en">Prefer lower-cost actions, <i>provided</i> they reveal enough for the task.</span></p></div>
+    <div class="card"><div class="tag">G10.20 · Information scent</div><p><span lang="id">Pirolli &amp; Card: label dan petunjuk harus memberi tahu pembaca di mana jawaban kemungkinan berada.</span><span lang="en">Pirolli &amp; Card: labels and cues must tell the reader where the answer is likely to be.</span></p></div>
+  </div>
+</section>
+
+<!-- 2 -->
+<section class="sec" id="loop">
+  <div class="sec-head"><div class="eyebrow"><span lang="id">Tiga interaction loop</span><span lang="en">Three interaction loops</span></div><h2><span lang="id">Jarak kognitif antara tangan, mata, dan otak</span><span lang="en">The cognitive distance between hand, eye and mind</span></h2><p class="src"><span lang="id">Ketuk kartu untuk membuka penjelasan.</span><span lang="en">Tap a card to reveal the explanation.</span></p></div>
+  <div class="loops">
+    <button class="loop" aria-expanded="false"><span class="t"><span lang="id">SUB-DETIK</span><span lang="en">SUB-SECOND</span></span><h3>Manipulation</h3><span class="hid"><span lang="id">Data selection &amp; manipulation: memilih dan menunjuk dengan koordinasi mata–tangan. Lag sepersekian detik saja sudah merusak semua loop di atasnya.</span><span lang="en">Data selection &amp; manipulation: selecting and pointing by eye–hand coordination. Even a fraction of a second of lag disrupts every loop above it.</span></span></button>
+    <button class="loop" aria-expanded="false"><span class="t"><span lang="id">DETIK – MENIT</span><span lang="en">SECONDS – MINUTES</span></span><h3>Navigation</h3><span class="hid"><span lang="id">Exploration &amp; navigation: menemukan jalan di ruang data yang besar dan membangun <b>cognitive map</b>. Waktu untuk pindah ke sudut pandang baru adalah biaya langsung dari pengetahuan.</span><span lang="en">Exploration &amp; navigation: finding your way through a large data space and building a <b>cognitive map</b>. The time taken to reach a new vantage is a direct cost of knowledge.</span></span></button>
+    <button class="loop" aria-expanded="false"><span class="t"><span lang="id">MENIT – HARI</span><span lang="en">MINUTES – DAYS</span></span><h3>Problem-solving</h3><span class="hid"><span lang="id">Membentuk dan menyempurnakan hipotesis. Dibahas di Ware Bab 11 (minggu 09).</span><span lang="en">Forming and refining hypotheses. Covered in Ware Ch. 11 (Week 09).</span></span></button>
+  </div>
+  <div class="sheet prose">
+    <h3><span lang="id">Mantra Shneiderman (1996)</span><span lang="en">Shneiderman's mantra (1996)</span></h3>
+    <p><b>"Overview first, zoom and filter, then details on demand."</b> <span lang="id">Ware menambahkan analisis nyata tidak serapi itu: orang melihat detail, zoom out, bergeser, lalu zoom in lagi. Di display view-only, tiap pertanyaan di mantra harus dijawab oleh layout:</span><span lang="en">Ware adds that real analysis is less tidy: people see a detail, zoom out, step sideways, and zoom back in. In a view-only display, each question in the mantra has to be answered by layout:</span></p>
+    <div class="tbl"><table>
+      <tr><th><span lang="id">Pertanyaan pembaca</span><span lang="en">Reader's question</span></th><th><span lang="id">Jawaban interaktif</span><span lang="en">Interactive answer</span></th><th><span lang="id">Jawaban view-only</span><span lang="en">View-only answer</span></th></tr>
+      <tr><td><span lang="id">Apa saja yang ada?</span><span lang="en">What is there?</span></td><td>Overview</td><td><span lang="id">Seluruh data di satu view, diurutkan, subset disebut di judul</span><span lang="en">The whole set in one view, sorted, subset stated in the title</span></td></tr>
+      <tr><td><span lang="id">Bagian yang saya cari di mana?</span><span lang="en">Where is the part I care about?</span></td><td>Zoom &amp; filter</td><td><span lang="id">Urutan, garis referensi di 70, inset, satu warna aksen</span><span lang="en">Ordering, a reference line at 70, an inset, one accent colour</span></td></tr>
+      <tr><td><span lang="id">Yang ini persisnya apa?</span><span lang="en">What exactly is this one?</span></td><td><span lang="id">Details on demand (hover, klik)</span><span lang="en">Details on demand (hover, click)</span></td><td><span lang="id">Label langsung, nilai dicetak bila selisih terlalu kecil</span><span lang="en">Direct labels, printed values where the difference is too small to see</span></td></tr>
+    </table></div>
+  </div>
+</section>
+
+<!-- 3 -->
+<section class="sec" id="hick">
+  <div class="sec-head"><div class="eyebrow">B · Manipulation loop</div><h2><span lang="id">Hick–Hyman: memilih memakan waktu</span><span lang="en">Hick–Hyman: choosing costs time</span></h2></div>
+  <div class="grid2">
+    <div class="prose">
+      <p class="mono" style="font-size:18px"><b>RT = a + b · log₂(C)</b></p>
+      <ul lang="id">
+        <li>Reaksi sederhana ≈ <span class="num">130 ms</span>.</li>
+        <li>Tiap <b>bit</b> pilihan ≈ <span class="num">160 ms</span> (kondisi optimal). 8 pilihan = 3 bit ≈ <span class="num">+480 ms</span>.</li>
+        <li>Yang diujikan <b>bentuk kurvanya</b> (logaritmik: tiap penggandaan pilihan menambah biaya tetap), bukan konstantanya.</li>
+        <li>Speed–accuracy trade-off: membolehkan sesekali salah membuat respons lebih cepat.</li>
+        <li><b>Setiap legend adalah menu.</b> Tab, filter list, KPI tile juga choice set. Dashboard tanpa klik pun tetap punya menu complexity; pembaca memilih dengan mata.</li>
+        <li><b>Fix:</b> label langsung di mark → C = 1 → log₂(1) = 0, pilihan hilang.</li>
+      </ul>
+      <ul lang="en">
+        <li>Simple reaction ≈ <span class="num">130 ms</span>.</li>
+        <li>Each <b>bit</b> of choice ≈ <span class="num">160 ms</span> (good conditions). 8 options = 3 bits ≈ <span class="num">+480 ms</span>.</li>
+        <li>What is examined is <b>the shape of the curve</b> (logarithmic: each doubling of options adds a fixed cost), not the constants.</li>
+        <li>Speed–accuracy trade-off: allowing occasional mistakes makes responses faster.</li>
+        <li><b>Every legend is a menu.</b> Tabs, filter lists and KPI tiles are choice sets too. A dashboard with nothing to click still has menu complexity; the reader chooses with the eyes.</li>
+        <li><b>Fix:</b> put the label on the mark → C = 1 → log₂(1) = 0, the choice disappears.</li>
+      </ul>
+    </div>
+    <div class="card calc">
+      <div class="ctrl"><label for="hC"><span><span lang="id">Jumlah opsi, C</span><span lang="en">Number of options, C</span></span><span class="num" id="hCv">8</span></label><input id="hC" type="range" min="1" max="64" value="8"></div>
+      <div class="presets"><button data-c="38">Filter rail 38</button><button data-c="5">Legend 5</button><button data-c="4">Tabs 4</button><button data-c="1"><span lang="id">Label langsung</span><span lang="en">Direct label</span></button></div>
+      <div class="readout" id="hOut"></div>
+      <div class="chartbox"><svg id="hSvg" viewBox="0 0 320 150" width="100%" role="img" aria-label="Hick-Hyman curve"></svg></div>
+    </div>
+  </div>
+  <div class="eli" lang="id"><div class="eyebrow">Versi super gampang</div>
+<p>Bayangkan kamu monyet di depan pohon. Kalau cuma ada <b>1 pisang</b>, kamu langsung ambil, tanpa mikir. Kalau ada <b>2 pisang</b>, kamu mikir sebentar, "yang mana ya?". Kalau ada <b>8 pisang</b>, mikirnya lebih lama lagi.</p>
+<ul><li><b>RT</b> = berapa lama kamu bengong sebelum ambil pisang.</li><li><b>C</b> = jumlah pisang (pilihan) di depanmu.</li><li><b>a</b> = waktu minimal, bahkan kalau pisangnya cuma satu (≈130 ms, sekedip).</li><li><b>log₂(C)</b> = "berapa kali pisangnya harus dibagi dua sampai tinggal satu". 8 → 4 → 2 → 1 = <b>3 kali</b> = 3 bit.</li><li><b>b</b> = harga tiap kali bagi dua (≈160 ms).</li></ul>
+<p>Triknya: menambah pisang <b>dua kali lipat</b> cuma menambah <b>satu langkah</b> mikir. 8 ke 16 pisang cuma tambah ≈160 ms, bukan dua kali lebih lama. Itulah kenapa kurvanya melengkung landai, bukan garis lurus naik.</p>
+<div class="ex">8 pilihan: 130 + 160 × 3 = 610 ms<br>1 pilihan (label langsung): 130 + 160 × 0 = 130 ms</div>
+<p><b>Hubungannya ke dashboard:</b> legend itu tumpukan pisang. Tiap kali mata mencocokkan warna bar ke legend, otak memilih dari C pilihan. Tulis label langsung di bar, pisangnya tinggal satu, mikirnya hilang.</p></div>
+<div class="eli" lang="en"><div class="eyebrow">Explained like you know nothing</div>
+<p>Picture a monkey at a tree. With <b>1 banana</b> it grabs it instantly, no thinking. With <b>2 bananas</b> it pauses: "which one?". With <b>8 bananas</b> it pauses longer.</p>
+<ul><li><b>RT</b> = how long you stare before grabbing.</li><li><b>C</b> = how many bananas (options) there are.</li><li><b>a</b> = the minimum time, even with one banana (≈130 ms, a blink).</li><li><b>log₂(C)</b> = "how many times you halve the pile until one is left". 8 → 4 → 2 → 1 = <b>3 times</b> = 3 bits.</li><li><b>b</b> = the price of each halving (≈160 ms).</li></ul>
+<p>The trick: <b>doubling</b> the bananas adds only <b>one more step</b> of thinking. Going from 8 to 16 adds ≈160 ms, not twice the time. That's why the curve bends and flattens instead of climbing in a straight line.</p>
+<div class="ex">8 options: 130 + 160 × 3 = 610 ms<br>1 option (direct label): 130 + 160 × 0 = 130 ms</div>
+<p><b>Why it matters for dashboards:</b> a legend is a pile of bananas. Each time the eye matches a bar's colour to the legend, the brain picks among C options. Write the label on the bar and there's one banana left, so the thinking disappears.</p></div>
+</section>
+
+<!-- 4 -->
+<section class="sec" id="fitts">
+  <div class="sec-head"><div class="eyebrow">B · Manipulation loop</div><h2><span lang="id">Fitts: menunjuk juga memakan waktu</span><span lang="en">Fitts: pointing costs time</span></h2></div>
+  <div class="grid2">
+    <div class="prose">
+      <p class="mono" style="font-size:18px"><b>T = a + b · log₂(D/W + 1)</b></p>
+      <ul lang="id">
+        <li>D = jarak ke target, W = lebar target. log₂(D/W+1) = <b>index of difficulty</b>.</li>
+        <li>Throughput manusia ≈ <span class="num">4 bit/detik</span> (jari, pergelangan, atau lengan).</li>
+        <li>Contoh Ware: gerak 16 cm ke target 0,5 cm ≈ <span class="num">5 bit</span>, lebih dari 1 detik dibanding target yang sudah di bawah kursor.</li>
+        <li>Loop iteratif: nilai jarak → gerak → koreksi dari feedback visual → ulangi.</li>
+        <li><b>Lag mengalikan biaya:</b> T = a + b(HumanTime + MachineLag)·log₂(D/W+1). Paling parah pada <b>target kecil</b>; alasan utama Ware menyorot VR.</li>
+        <li><b>Fix view-only:</b> taruh jawaban tepat di tempat mata mendarat pertama.</li>
+      </ul>
+      <ul lang="en">
+        <li>D = distance to the target, W = its width. log₂(D/W+1) = the <b>index of difficulty</b>.</li>
+        <li>Human throughput ≈ <span class="num">4 bits/second</span> (finger, wrist or forearm).</li>
+        <li>Ware's example: moving 16 cm to a 0.5 cm target ≈ <span class="num">5 bits</span>, over a second longer than a target already under the cursor.</li>
+        <li>An iterative loop: judge distance → move → correct from visual feedback → repeat.</li>
+        <li><b>Lag multiplies the cost:</b> T = a + b(HumanTime + MachineLag)·log₂(D/W+1). Worst with <b>small targets</b>; the main reason Ware singles out VR.</li>
+        <li><b>View-only fix:</b> put the answer where the eye lands first.</li>
+      </ul>
+    </div>
+    <div class="card calc">
+      <div class="ctrl"><label for="fD"><span><span lang="id">Jarak D (cm)</span><span lang="en">Distance D (cm)</span></span><span class="num" id="fDv">16</span></label><input id="fD" type="range" min="1" max="30" step="0.5" value="16"></div>
+      <div class="ctrl"><label for="fW"><span><span lang="id">Lebar W (cm)</span><span lang="en">Width W (cm)</span></span><span class="num" id="fWv">0.5</span></label><input id="fW" type="range" min="0.25" max="5" step="0.25" value="0.5"></div>
+      <div class="ctrl"><label><span>Machine lag</span></label>
+        <div class="seg" id="fLag"><button aria-pressed="true" data-l="0"><span lang="id">Tanpa lag</span><span lang="en">No lag</span></button><button aria-pressed="false" data-l="0.1">100 ms</button><button aria-pressed="false" data-l="0.3">300 ms</button></div></div>
+      <div class="readout" id="fOut"></div>
+      <p class="src"><span lang="id">Waktu dengan lag memakai konstanta ilustratif dari halaman kuliah (b·HumanTime = 0,25 s/bit), hanya untuk menunjukkan bentuknya.</span><span lang="en">Lagged times use the lecture page's placeholder constant (b·HumanTime = 0.25 s/bit), only to show the shape.</span></p>
+    </div>
+  </div>
+  <div class="eli" lang="id"><div class="eyebrow">Versi super gampang</div>
+<p>Sekarang monyetnya sudah memilih pisang, tinggal <b>meraihnya</b>. Dua hal bikin lama: pisangnya <b>jauh</b> (D besar) dan pisangnya <b>kecil</b> (W kecil). Pisang besar di depan hidung? Langsung dapat. Pisang kecil di ujung dahan? Tangan harus pelan-pelan, meleset, koreksi, meleset, koreksi.</p>
+<ul><li><b>T</b> = lama waktu sampai tanganmu kena pisangnya.</li><li><b>D</b> = jarak ke pisang. <b>W</b> = besar pisangnya.</li><li><b>D/W</b> = "seberapa jauh dibanding seberapa besar". Jauh + kecil = angka besar = susah.</li><li><b>log₂(D/W + 1)</b> = tingkat kesulitan (<i>index of difficulty</i>), dalam bit. +1 cuma supaya hasilnya tidak pernah negatif.</li><li>Manusia bisa "membayar" sekitar <b>4 bit per detik</b>. Jadi 5 bit ≈ 1,25 detik.</li></ul>
+<p>Seperti Hick, ada log-nya: jarak dua kali lipat cuma tambah satu langkah kesulitan. Tapi kalau pisangnya <b>diperkecil setengah</b>, kesulitannya juga naik satu langkah.</p>
+<div class="ex">16 cm ke target 0,5 cm: log₂(16/0,5 + 1) = log₂(33) ≈ 5 bit ≈ 1,25 s<br>16 cm ke target 4 cm: log₂(16/4 + 1) = log₂(5) ≈ 2,3 bit ≈ 0,6 s</div>
+<p><b>Lag:</b> bayangkan tiap kali monyet menggerakkan tangan, matanya baru melihat hasilnya 0,3 detik kemudian. Dia terus kelewatan dan harus balik. Makin kecil pisangnya, makin banyak koreksi, jadi lag-nya dibayar berkali-kali. Itulah kenapa rumusnya <b>mengalikan</b> lag dengan tingkat kesulitan, dan kenapa VR yang ngelag bikin pusing.</p>
+<p><b>Hubungannya ke dashboard:</b> dashboard view-only tidak punya tangan, jadi "pisangnya" harus sudah ada tepat di tempat mata jatuh pertama kali. Jarak nol = waktu nol.</p></div>
+<div class="eli" lang="en"><div class="eyebrow">Explained like you know nothing</div>
+<p>Now the monkey has picked a banana and only has to <b>reach</b> it. Two things slow it down: the banana is <b>far</b> (big D) and the banana is <b>small</b> (small W). A big banana under your nose? Instant. A tiny banana at the end of a branch? The hand goes slowly: miss, correct, miss, correct.</p>
+<ul><li><b>T</b> = time until your hand touches the banana.</li><li><b>D</b> = distance to the banana. <b>W</b> = how big it is.</li><li><b>D/W</b> = "how far compared to how big". Far + small = big number = hard.</li><li><b>log₂(D/W + 1)</b> = the <i>index of difficulty</i>, in bits. The +1 just keeps it from going negative.</li><li>Humans "pay" about <b>4 bits per second</b>. So 5 bits ≈ 1.25 seconds.</li></ul>
+<p>Like Hick, there's a log: doubling the distance adds only one step of difficulty. But <b>halving</b> the banana's size also adds a step.</p>
+<div class="ex">16 cm to a 0.5 cm target: log₂(16/0.5 + 1) = log₂(33) ≈ 5 bits ≈ 1.25 s<br>16 cm to a 4 cm target: log₂(16/4 + 1) = log₂(5) ≈ 2.3 bits ≈ 0.6 s</div>
+<p><b>Lag:</b> imagine that every time the monkey moves its hand, its eyes only see the result 0.3 s later. It keeps overshooting and coming back. The smaller the banana, the more corrections, so the lag is paid again and again. That's why the formula <b>multiplies</b> lag by the difficulty, and why laggy VR makes people sick.</p>
+<p><b>Why it matters for dashboards:</b> a view-only dashboard has no hand, so the "banana" must already sit where the eye lands first. Zero distance = zero time.</p></div>
+  <div class="grid3">
+    <div class="card"><div class="tag"><span lang="id">Hover = klik tercepat</span><span lang="en">Hover = the fastest click</span></div><p><span lang="id">G10.1: pakai hover untuk aksi epistemik tercepat saat target padat. Tapi hover butuh pointer yang bisa diam tanpa memilih. <b>Ponsel tidak punya hover</b>, jadi nilai yang disimpan di tooltip hilang bagi pembaca ponsel.</span><span lang="en">G10.1: use hover for the fastest epistemic actions where targets are dense. But hover needs a pointer that can rest without selecting. <b>A phone has no hover</b>, so values kept in tooltips are simply missing for a phone reader.</span></p></div>
+    <div class="card"><div class="tag"><span lang="id">Tracing · dua tangan · kompatibilitas</span><span lang="en">Tracing · two hands · compatibility</span></div><p><span lang="id">Accot &amp; Zhai: kecepatan ∝ lebar jalur (v = W/τ). Guiard: tangan non-dominan pegang frame, dominan kerja detail (G10.2). S-R compatibility (G10.4): offset kecil diadaptasi dalam menit, sumbu rotasi terbalik butuh minggu.</span><span lang="en">Accot &amp; Zhai: speed ∝ path width (v = W/τ). Guiard: the non-dominant hand sets the frame, the dominant hand does detail (G10.2). S-R compatibility (G10.4): small offsets adapt in minutes, inverted rotation axes take weeks.</span></p></div>
+    <div class="card"><div class="tag">Power law of practice</div><p><span lang="id">log(Tₙ) = C − α·log(n). Novice cepat membaik, expert butuh ribuan percobaan untuk 10%. Pembaca dashboard view-only <b>selalu novice</b> di penglihatan pertama.</span><span lang="en">log(Tₙ) = C − α·log(n). A novice improves fast; an expert needs thousands of trials for another 10%. A view-only dashboard's reader is <b>always a novice</b> on first viewing.</span></p></div>
+  </div>
+  <div class="eli" lang="id"><div class="eyebrow">Tiga "law" kecil lainnya, versi gampang</div>
+<ul><li><b>Steering law (Accot &amp; Zhai), v = W/τ:</b> monyet jalan di atas dahan. Dahan lebar, dia bisa lari. Dahan setipis tali, dia harus merayap pelan. Kecepatan sebanding dengan lebar jalurnya. Contoh nyata: menyusuri submenu yang sempit dengan mouse.</li>
+<li><b>Dua tangan (Guiard):</b> satu tangan memegang dahan supaya diam (tangan non-dominan = <i>frame</i>), tangan lain mengupas pisang (tangan dominan = detail). Seperti memegang kertas dengan tangan kiri sambil menulis dengan tangan kanan.</li>
+<li><b>Power law of practice, log(Tₙ) = C − α·log(n):</b> pertama kali memanjat pohon, monyet lambat sekali. Percobaan ke-10 sudah jauh lebih cepat. Tapi setelah ke-1000, tambah cepatnya tinggal sedikit sekali. Makin jago, makin susah tambah jago. Pembaca dashboard cuma lihat sekali, jadi dia selalu monyet yang baru pertama kali memanjat.</li>
+<li><b>Stimulus–response compatibility:</b> kalau tangan digerakkan ke kanan, benda di layar juga harus ke kanan. Kalau arahnya dibalik, monyetnya bingung berminggu-minggu.</li></ul></div>
+<div class="eli" lang="en"><div class="eyebrow">Three smaller "laws", made simple</div>
+<ul><li><b>Steering law (Accot &amp; Zhai), v = W/τ:</b> a monkey walking along a branch. Wide branch, it can run. Branch as thin as a rope, it has to creep. Speed is proportional to the path's width. Real example: tracing a narrow submenu with a mouse.</li>
+<li><b>Two hands (Guiard):</b> one hand holds the branch still (non-dominant hand = the <i>frame</i>), the other peels the banana (dominant hand = the detail). Like holding paper with your left hand while writing with your right.</li>
+<li><b>Power law of practice, log(Tₙ) = C − α·log(n):</b> the first climb is very slow. By the 10th it's much faster. After the 1000th, the extra speed-up is tiny. The better you get, the harder it is to get better. A dashboard reader looks only once, so they're always the monkey on its first climb.</li>
+<li><b>Stimulus–response compatibility:</b> move your hand right and the thing on screen should move right. Reverse the direction and the monkey is confused for weeks.</li></ul></div>
+</section>
+
+<!-- 5 -->
+<section class="sec" id="memori">
+  <div class="sec-head"><div class="eyebrow">C · Navigation loop</div><h2><span lang="id">Peta di kepala &amp; eyes beat memory</span><span lang="en">Maps in the head &amp; eyes beat memory</span></h2></div>
+  <div class="grid2">
+    <div class="card"><div class="tag">Cognitive map</div><p><span lang="id">Peta mental paling mudah dibangun dari apa yang terlihat dari satu titik pandang. Posisi dalam satu ruangan diingat baik; antar ruangan lewat koridor diingat buruk. Studi Thorndyke &amp; Hayes-Roth: belajar peta sebentar ≈ setahun bekerja di gedung itu (untuk jarak garis lurus). G10.6/G10.7: sediakan overview map.</span><span lang="en">Mental maps form most easily from what can be seen from one vantage point. Positions within a room are remembered well; across rooms connected by corridors, poorly. Thorndyke &amp; Hayes-Roth: briefly studying a map ≈ a year of working in the building (for straight-line distances). G10.6/G10.7: provide an overview map.</span></p></div>
+    <div class="card"><div class="tag"><span lang="id">Dashboard = gedung, panel = ruangan</span><span lang="en">Dashboard = building, panel = room</span></div><p><span lang="id">Perbandingan <b>dalam satu panel murah</b>; <b>antar panel = corridor walk</b> yang mahal. Membandingkan hal di tab lain / tooltip memaksa working memory yang kapasitasnya hanya beberapa objek.</span><span lang="en">Comparisons <b>within a panel are cheap</b>; <b>across panels they are corridor walks</b>. Comparing with something tabbed or hovered away forces working memory, which holds only a few objects.</span></p><p><span lang="id"><b>Fix (Munzner, eyes beat memory):</b> sejajarkan yang dibandingkan berdampingan di sumbu yang sama.</span><span lang="en"><b>Fix (Munzner, eyes beat memory):</b> put compared things side by side on a shared axis.</span></p></div>
+    <div class="card"><div class="tag">"You are here" (G10.9)</div><p><span lang="id">Overview perlu penanda lokasi &amp; orientasi. Di dashboard statis, padanannya adalah <b>subjek yang di-highlight</b>: satu warna menonjol di tiap panel, sisanya abu-abu (grey + one highlight).</span><span lang="en">An overview needs a location and orientation marker. In a static dashboard the equivalent is the <b>highlighted subject</b>: one salient colour in every panel, everything else grey (grey + one highlight).</span></p></div>
+    <div class="card"><div class="tag">G10.10</div><p><span lang="id">Untuk peta navigasi: tawarkan tampilan north-up, track-up, dan track-up-perspective.</span><span lang="en">For navigation maps: offer north-up, track-up and track-up-perspective views.</span></p></div>
+  </div>
+</section>
+
+<!-- 6 -->
+<section class="sec" id="fokus">
+  <div class="sec-head"><div class="eyebrow">C · Navigation loop</div><h2><span lang="id">Focus + context: detail tanpa kehilangan peta</span><span lang="en">Focus + context: detail without losing the map</span></h2><p class="prose" style="color:var(--muted)"><span lang="id">Tiga jenis skala: spasial (peta), struktural (hierarki), temporal. Ware: kata "focus" menyesatkan karena pola penting bisa muncul di skala mana pun.</span><span lang="en">Three kinds of scale: spatial (a map), structural (a hierarchy), temporal. Ware: "focus" is a misleading word, because important patterns occur at any scale.</span></p></div>
+  <div class="grid3">
+    <div class="card"><div class="tag">1 · Multiple windows (inset)</div><p class="bignum">≤ 30×</p><p><span lang="id">Tanpa distorsi, tapi ada <b>visual seam</b>. Fix: gambar proxy di overview + garis penghubung (G10.16). <b>Satu-satunya yang lolos aturan "no interaction" tanpa diubah</b>, jadi paling berguna untuk Tugas Kelompok 2.</span><span lang="en">No distortion, but a <b>visual seam</b>. Fix: draw a proxy on the overview plus connecting lines (G10.16). <b>The only one that survives the "no interaction" rule unchanged</b>, so it is the most useful for Group Assignment 2.</span></p></div>
+    <div class="card"><div class="tag">2 · Distortion (fisheye)</div><p class="bignum">≤ 5×</p><p><span lang="id">Konteks tetap, tapi bentuk familiar rusak dan periferi tak terbaca. G10.17: skala maks ≈5×; G10.18: pola bermakna harus tetap dikenali. Di peta statis juga memalsukan luas → pilih inset.</span><span lang="en">Context stays, but familiar shapes break and the periphery becomes unreadable. G10.17: max scale ≈5×; G10.18: meaningful patterns must stay recognisable. In a static map it also misrepresents area → prefer insets.</span></p></div>
+    <div class="card"><div class="tag">3 · Rapid zooming</div><p class="bignum"><span lang="id">3–4× / detik</span><span lang="en">3–4× / sec</span></p><p><span lang="id">Satu jendela, fokus &amp; konteks tak pernah tampil bersama; animasi halus menyatukan keduanya. G10.19: transisi &lt; ≈1 detik. Tak ada padanan statis; paling dekat: <b>small-multiples scale ladder</b>.</span><span lang="en">One window; focus and context are never shown together, smooth animation integrates them over time. G10.19: transitions under ≈1 second. No static equivalent; the nearest is a <b>small-multiples scale ladder</b>.</span></p></div>
+  </div>
+</section>
+
+<!-- 7 -->
+<section class="sec" id="linking">
+  <div class="sec-head"><div class="eyebrow">C · Navigation loop</div><h2><span lang="id">Menghubungkan banyak view: de-interacting</span><span lang="en">Linking many views: de-interacting</span></h2></div>
+  <div class="sheet tbl"><table>
+    <tr><th><span lang="id">Teknik interaktif</span><span lang="en">Interactive technique</span></th><th><span lang="id">Padanan view-only</span><span lang="en">View-only equivalent</span></th></tr>
+    <tr><td>Brushing / linked views (Becker &amp; Cleveland, 1987)</td><td><span lang="id"><b>Consistent identity</b>: urutan, hue aksen, dan label yang sama di setiap panel</span><span lang="en"><b>Consistent identity</b>: same order, accent hue and label in every panel</span></td></tr>
+    <tr><td>Dynamic queries / slider (Ahlberg, Williamson &amp; Shneiderman; FilmFinder)</td><td><span lang="id"><b>Pre-filter saat desain</b>, sebutkan subset di judul</span><span lang="en"><b>Filter at design time</b>, state the subset in the title</span></td></tr>
+    <tr><td>Hover tooltip</td><td><span lang="id"><b>Direct labeling</b>; dot plot untuk near-tie</span><span lang="en"><b>Direct labeling</b>; a dot plot for near-ties</span></td></tr>
+    <tr><td>Degree of interest / generalised fisheye (Furnas, 1986)</td><td><span lang="id">Hitung DOI di muka: <b>grey + one highlight</b></span><span lang="en">Pre-compute the DOI: <b>grey + one highlight</b></span></td></tr>
+    <tr><td>Near-neighbour highlighting (Constellation, Munzner)</td><td><span lang="id"><b>Agregasi</b> atau facet ke small multiples (node-link statis tak terlacak di atas ≈30 entitas)</span><span lang="en"><b>Aggregate</b> or facet into small multiples (static node-link stops being traceable beyond ≈30 entities)</span></td></tr>
+  </table></div>
+  <div class="card"><div class="tag"><span lang="id">Kapan interaksi memang jawabannya</span><span lang="en">When interaction is the right answer</span></div><p><span lang="id">Saat data tak muat satu layar di resolusi yang dibutuhkan, saat pertanyaan pembaca tak bisa ditebak, atau saat data berubah lebih cepat dari redesain. Ware: teknik interaktif membantu untuk <b>ratusan sampai beberapa ribu entitas</b>, bukan big data utuh (tahap pertama big data biasanya query). Munzner: view interaktif yang lag lebih buruk dari view statis yang baik.</span><span lang="en">When the data doesn't fit on one screen at the resolution the task needs, when readers have questions the designer can't predict, or when the data changes faster than a redesign could. Ware: interactive techniques help with <b>hundreds to a few thousand entities</b>, not big data as a whole (the first stage there is usually a query). Munzner: an interactive view that lags is worse than a good static one.</span></p></div>
+</section>
+
+<!-- 8 -->
+<section class="sec" id="kompleks">
+  <div class="sec-head"><div class="eyebrow"><span lang="id">D · Apa yang bisa ditemukan pembaca · pasti keluar ≥3 soal</span><span lang="en">D · What a viewer can locate · at least 3 quiz items</span></div><h2><span lang="id">Tiga sumber kompleksitas</span><span lang="en">Three sources of complexity</span></h2></div>
+  <div class="gauge-row">
+    <div class="gauge"><div class="eyebrow">Layout complexity</div><div class="big">10 → 5</div><div class="arrow"><span lang="id">panel di layar</span><span lang="en">panels on screen</span></div><p><span lang="id">Jumlah panel, grid tak rata, jarak panel terkait, skala tak sejajar. <b>Mendorong jarak eye-travel &amp; corridor walk (+ working memory).</b></span><span lang="en">Number of panels, irregular grid, distance between related panels, unaligned scales. <b>Drives eye-travel distance &amp; corridor walks (+ working memory).</b></span></p></div>
+    <div class="gauge"><div class="eyebrow">Menu complexity</div><div class="big">51 → 4</div><div class="arrow"><span lang="id">opsi di choice set</span><span lang="en">options in choice sets</span></div><p><span lang="id">Legend, tab, filter, KPI tile, dropdown. <b>Mendorong choice time</b> (Hick–Hyman).</span><span lang="en">Legends, tabs, filters, KPI tiles, drop-downs. <b>Drives choice time</b> (Hick–Hyman).</span></p></div>
+    <div class="gauge"><div class="eyebrow">View complexity</div><div class="big">13 → 3</div><div class="arrow"><span lang="id">warna bermakna</span><span lang="en">colours carrying meaning</span></div><p><span lang="id">Jumlah mark, encoding, warna, lapisan overlap, non-data ink dalam satu view. <b>Mendorong search time &amp; clutter.</b></span><span lang="en">Number of marks, encodings, colours, overlapping layers and non-data ink inside one view. <b>Drives search time &amp; clutter.</b></span></p></div>
+  </div>
+  <p class="src"><span lang="id">Angka Busy Dashboard: menu = filter 38 + legend 5 + tabs 4 + KPI 4 = 51. Setelah diperbaiki: tinggal 4 KPI; legend jadi label langsung + satu ramp.</span><span lang="en">Busy Dashboard counts: menu = filter 38 + legend 5 + tabs 4 + KPI 4 = 51. After the repair: only the 4 KPIs remain; the legend became direct labels and one ramp.</span></p>
+  <div class="card"><div class="tag"><span lang="id">Clutter bisa diukur</span><span lang="en">Clutter can be measured</span></div><p><span lang="id"><b>Feature congestion</b> (Rosenholtz dkk.): clutter = sulitnya menambah item baru yang masih bisa menarik perhatian. Tiap channel yang dipakai untuk dekorasi (tile berwarna, border tebal, ikon, gradien) tak bisa lagi dipakai data untuk pop-out. Cukup tahu nama &amp; idenya.</span><span lang="en"><b>Feature congestion</b> (Rosenholtz et al.): clutter = the difficulty of adding a new item that would still attract attention. Every channel spent on decoration (tinted tiles, heavy borders, icons, gradients) is one the data can no longer use to pop out. Know the name and the idea; no need to compute it.</span></p></div>
+  <div class="sheet sorter" id="sorter">
+    <div class="prose"><h3><span lang="id">Cek cepat: ini kegagalan layout, menu, atau view?</span><span lang="en">Quick check: is this a layout, menu or view failure?</span></h3><p class="src"><span lang="id">Format soal persis seperti yang dijanjikan dosen di Kahoot.</span><span lang="en">The exact item format the lecturer announced for the Kahoot.</span></p></div>
+    <div id="cases" class="sorter"></div>
+  </div>
+</section>
+
+<!-- 9 -->
+<section class="sec" id="aturan">
+  <div class="sec-head"><div class="eyebrow"><span lang="id">Blueprint untuk Rung 1</span><span lang="en">Blueprint for Rung 1</span></div><h2><span lang="id">Aturan layout &amp; Busy Dashboard diperbaiki</span><span lang="en">Layout rules &amp; the Busy Dashboard, repaired</span></h2></div>
+  <div class="rules">
+    <div class="rule"><span class="k">01</span><p><span lang="id"><b>Top-left:</b> jawaban pertanyaan terbesar di tempat mata mendarat pertama. KPI tile bukan default di sana.</span><span lang="en"><b>Top-left:</b> put the main question's answer where the eye lands first. KPI tiles don't go there by default.</span></p></div>
+    <div class="rule"><span class="k">02</span><p><span lang="id"><b>Align:</b> yang dibandingkan di sumbu &amp; skala yang sama. Panel tak sejajar mengubah perbandingan posisi jadi perbandingan memori.</span><span lang="en"><b>Align:</b> what is compared shares an axis and a scale. Unaligned panels turn a position comparison into a memory comparison.</span></p></div>
+    <div class="rule"><span class="k">03</span><p><span lang="id"><b>Group by task</b>, bukan per jenis chart (Gestalt proximity &amp; common region).</span><span lang="en"><b>Group by task</b>, not by chart type (Gestalt proximity &amp; common region).</span></p></div>
+    <div class="rule"><span class="k">04</span><p><span lang="id"><b>Identity konstan:</b> satu urutan, satu warna aksen, satu bentuk label per item di semua panel.</span><span lang="en"><b>Constant identity:</b> one order, one accent colour, one label form per item across all panels.</span></p></div>
+    <div class="rule"><span class="k">05</span><p><span lang="id"><b>Budget:</b> tiap panel harus menjawab pertanyaan yang tak dijawab panel lain. Kalau tidak, hapus.</span><span lang="en"><b>Budget:</b> every panel must answer a question no other panel answers. If it doesn't, remove it.</span></p></div>
+  </div>
+  <div class="sheet prose">
+    <h3><span lang="id">Lima perbaikan Busy Dashboard (data IPM BPS 2025)</span><span lang="en">Five repairs to the Busy Dashboard (BPS IPM 2025 data)</span></h3>
+    <ul lang="id">
+      <li>Hapus filter rail &amp; tab bar; subset disebut di judul.</li>
+      <li>Donut diganti bar chart terurut + garis referensi di 70, label langsung.</li>
+      <li>Choropleth + legend diganti skala sekuensial CVD-safe + inset.</li>
+      <li>Dot plot bagian atas distribusi dengan nilai dicetak: selisih 0,02 tak bisa ditunjukkan warna atau panjang.</li>
+      <li>Satu warna aksen untuk subjek di semua panel.</li>
+    </ul>
+    <ul lang="en">
+      <li>Remove the filter rail &amp; tab bar; state the subset in the title.</li>
+      <li>Replace the donut with a sorted bar chart, a reference line at 70, direct labels.</li>
+      <li>Replace choropleth + legend with a CVD-safe sequential scale + an inset.</li>
+      <li>Add a dot plot of the top of the distribution with values printed: a 0.02 gap can't be shown by colour or length.</li>
+      <li>One accent colour for the subject across every panel.</li>
+    </ul>
+    <p lang="id"><b>Jawaban tiga tugas:</b> terendah = Papua Pegunungan <span class="num">54,91</span> (selisih <span class="num">5,73</span> ke Papua Tengah 60,64) · Kaltim <span class="num">79,39</span> vs Bali <span class="num">79,37</span> → cetak angkanya · di bawah 70 ada <span class="num">5</span>: NTT 69,89, Papua Selatan 69,54, Papua Barat 68,48, Papua Tengah 60,64, Papua Pegunungan 54,91.</p>
+    <p lang="en"><b>The three tasks, answered:</b> lowest = Papua Pegunungan <span class="num">54.91</span> (<span class="num">5.73</span> below Papua Tengah, 60.64) · Kalimantan Timur <span class="num">79.39</span> vs Bali <span class="num">79.37</span> → print the numbers · below 70 there are <span class="num">5</span>: NTT 69.89, Papua Selatan 69.54, Papua Barat 68.48, Papua Tengah 60.64, Papua Pegunungan 54.91.</p>
+    <div class="claim" style="font-size:16px"><p><span lang="id"><b>Rumus penutup:</b> Low Menu + Low View + Aligned Layout = Answers at a Glance. Interaksi membeli simultanitas atau skala; display view-only membelinya dengan layout.</span><span lang="en"><b>The closing formula:</b> Low Menu + Low View + Aligned Layout = Answers at a Glance. Interaction buys simultaneity or scale; a view-only display buys them with layout.</span></p></div>
+  </div>
+</section>
+
+<!-- 10 -->
+<section class="sec" id="modal">
+  <div class="sec-head"><div class="eyebrow"><span lang="id">E · Konteks multimodal (tidak diimplementasikan)</span><span lang="en">E · Multimodal context (not implemented)</span></div><h2><span lang="id">Saat channel bertanya melemah, beban membaca naik</span><span lang="en">When the asking channel is weak, reading load rises</span></h2></div>
+  <div class="grid3">
+    <div class="card"><div class="tag">Touch / pen</div><p><span lang="id">Tangan menutupi layar (occlusion), <b>tidak ada hover</b>. Target minimal: WCAG 2.2 <b>24×24</b> CSS px (AA, SC 2.5.8), <b>44×44</b> (AAA, SC 2.5.5); Apple HIG 44 pt; Material 48 dp.</span><span lang="en">The hand covers what it touches (occlusion), <b>no hover</b>. Minimum targets: WCAG 2.2 <b>24×24</b> CSS px (AA, SC 2.5.8), <b>44×44</b> (AAA, SC 2.5.5); Apple HIG 44 pt; Material 48 dp.</span></p></div>
+    <div class="card"><div class="tag">Voice</div><p><span lang="id">Tak ada pointer, pembaca harus menyebut nama. Setiap item perlu <b>label unik yang bisa diucapkan</b>. Bolt, "Put-that-there" (1980).</span><span lang="en">No pointer, so the reader must name what they mean. Every item needs a <b>unique, speakable label</b>. Bolt, "Put-that-there" (1980).</span></p></div>
+    <div class="card"><div class="tag">Gaze</div><p><span lang="id"><b>Midas touch problem</b> (Jacob, 1990): melihat ≠ memilih. Butuh konfirmasi (headset: gaze + pinch). Salience jadi desain interaksi.</span><span lang="en"><b>Midas touch problem</b> (Jacob, 1990): looking ≠ selecting. Needs confirmation (headsets: gaze + pinch). Salience becomes interaction design.</span></p></div>
+    <div class="card"><div class="tag">Gesture</div><p><span lang="id">Tanpa permukaan dan haptic, lengan cepat lelah (<b>gorilla arm</b>) → target lebih besar, feedback lebih jelas.</span><span lang="en">No surface and no haptics, and the arm tires fast (<b>gorilla arm</b>) → larger targets, clearer feedback.</span></p></div>
+    <div class="card"><div class="tag"><span lang="id">Jembatan ke minggu 06</span><span lang="en">Bridge to Week 06</span></div><p><span lang="id">G10.5: cukup objek terlihat untuk menilai posisi. Frame egocentric vs allocentric; pan &amp; tilt tanpa roll (G10.8); kurangi DOF (G10.15). Metafora: world-in-hand, walking, flying, point-and-go, world-in-miniature.</span><span lang="en">G10.5: enough objects visible to judge position. Egocentric vs allocentric frames; pan &amp; tilt, no roll (G10.8); reduce DOF to what the task needs (G10.15). Metaphors: world-in-hand, walking, flying, point-and-go, world-in-miniature.</span></p></div>
+  </div>
+</section>
+
+<!-- 11 -->
+<section class="sec" id="angka">
+  <div class="sec-head"><div class="eyebrow"><span lang="id">Hafalan</span><span lang="en">Memorise</span></div><h2><span lang="id">Angka yang sering jadi jebakan</span><span lang="en">Numbers that make good trick questions</span></h2><p class="src"><span lang="id">Ketuk kartu untuk membalik.</span><span lang="en">Tap a card to flip it.</span></p></div>
+  <div class="flash" id="flash"></div>
+</section>
+
+<!-- QUIZ -->
+<section class="sec" id="latihan">
+  <div class="sec-head"><div class="eyebrow"><span lang="id">Latihan</span><span lang="en">Practice</span></div><h2><span lang="id">Mode Kahoot</span><span lang="en">Kahoot mode</span></h2><p class="src"><span lang="id">20 detik per soal, poin maksimal 1000 dan makin cepat makin besar, seperti Kahoot asli. Opsi diacak tiap putaran. Bahasa bisa diganti kapan saja, termasuk di tengah soal.</span><span lang="en">20 seconds per item, up to 1000 points with faster answers scoring more, like the real Kahoot. Options are shuffled every round. You can switch language at any time, even mid-question.</span></p></div>
+  <div class="stage" id="stage"></div>
+</section>
+
+<p class="foot"><span lang="id">Disusun dari slide Minggu 05 "Interacting with Visualisations: The Price of Asking" dan halaman kuliah EA234506 (Ware, <i>Information Visualization</i>, 4th ed., Bab 10; Munzner Bab 6 &amp; 12). Nilai IPM dari BPS 2025.</span><span lang="en">Built from the Week 05 slides "Interacting with Visualisations: The Price of Asking" and the EA234506 lecture page (Ware, <i>Information Visualization</i>, 4th ed., Ch. 10; Munzner Ch. 6 &amp; 12). IPM values from BPS 2025.</span></p>
+</div>
+
+<script>
+(function(){
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+let lang='id';
+const L=x=>typeof x==='string'?x:x[lang==='en'?1:0];
+const hooks=[];
+
+/* ladder */
+const rungText={
+ 1:["Rung 1 · Eye fixation",["Lihat saja. ≈3 per detik, langsung. Termurah. <b>Dashboard view-only hanya hidup di rung 1</b>, jadi Tugas Kelompok 2 adalah latihan membuat rung 1 cukup.","Just look. ≈3 per second, immediate. The cheapest. <b>A view-only dashboard works only on rung 1</b>, so Group Assignment 2 is an exercise in making rung 1 sufficient."]],
+ 2:["Rung 2 · Hover",["Info muncul di samping objek, ≈1 per detik. Hanya ada jika ada pointer yang bisa diam tanpa memilih. Gagal di ponsel dan layar sentuh.","Information appears beside the object, ≈1 per second. Exists only when a pointer can rest without selecting. Fails on phones and touch screens."]],
+ 3:[["Rung 3 · Klik buka / tutup","Rung 3 · Click to open / close"],["Panel muncul, bisa menutupi view, dan harus ditutup lagi. Satu tiap beberapa detik; memutus alur.","A panel appears, may cover the view, and has to be dismissed. One every few seconds; it breaks the flow."]],
+ 4:[["Rung 4 · Klik ke layar baru","Rung 4 · Click to a new screen"],["View asli diganti. Konteks hilang, working memory harus menjembatani, drill-down berulang sering diulang dari awal. Termahal.","The original view is replaced. Context is lost, working memory has to bridge the gap, and repeated drill-downs are often redone. The most expensive."]]};
+let curRung=1;
+function setRung(r){curRung=r;$$('.rung').forEach(b=>b.classList.toggle('on',b.dataset.r==r));
+ const lvl=r==1?['Termurah','Cheapest']:r==4?['Termahal','Most expensive']:['Tengah','Middle'];
+ $('#rungDetail').innerHTML=`<div class="eyebrow">${L(lvl)}</div><h3>${L(rungText[r][0])}</h3><p>${L(rungText[r][1])}</p><p class="src">${L(['Urutan &amp; laju dari Ware Bab 10 (hlm. 385–386).','Order &amp; rates from Ware Ch. 10 (pp. 385–386).'])}</p>`;}
+$$('.rung').forEach(b=>b.addEventListener('click',()=>setRung(b.dataset.r)));
+hooks.push(()=>setRung(curRung));
+
+/* loops */
+$$('.loop').forEach(b=>{const h=b.querySelector('.hid');h.hidden=true;b.addEventListener('click',()=>{h.hidden=!h.hidden;b.setAttribute('aria-expanded',!h.hidden)})});
+
+/* Hick */
+const hC=$('#hC');
+function drawHick(){const C=+hC.value,bits=Math.log2(C),add=160*bits;
+ $('#hCv').textContent=C;
+ $('#hOut').innerHTML=`log₂(${C}) = ${bits.toFixed(2)} bit<br>+ <b>${Math.round(add)} ms</b> ${L(['di atas reaksi ≈130 ms','on top of the ≈130 ms simple reaction'])} → RT ≈ ${Math.round(130+add)} ms`;
+ const W=320,H=150,px=x=>36+(Math.log2(x)/6)*(W-50),py=y=>H-24-(y/1100)*(H-36);
+ let d='';for(let c=1;c<=64;c+=0.5)d+=(c==1?'M':'L')+px(c).toFixed(1)+','+py(130+160*Math.log2(c)).toFixed(1);
+ let ticks='';[1,2,4,8,16,32,64].forEach(c=>ticks+=`<text x="${px(c)}" y="${H-8}" text-anchor="middle">${c}</text>`);
+ [0,500,1000].forEach(v=>ticks+=`<text x="30" y="${py(v)+4}" text-anchor="end">${v}</text><line x1="36" x2="${W-10}" y1="${py(v)}" y2="${py(v)}" stroke="var(--line)"/>`);
+ $('#hSvg').innerHTML=ticks+`<path d="${d}" fill="none" stroke="var(--blue)" stroke-width="2.5"/><circle cx="${px(C)}" cy="${py(130+add)}" r="6" fill="var(--red)"/><text x="${W-10}" y="12" text-anchor="end">ms vs C (log)</text>`;}
+hC.addEventListener('input',drawHick);
+$$('#hick .presets button').forEach(b=>b.addEventListener('click',()=>{hC.value=b.dataset.c;drawHick()}));
+hooks.push(drawHick);
+
+/* Fitts */
+let lag=0;
+function drawFitts(){const D=+$('#fD').value,W=+$('#fW').value,ID=Math.log2(D/W+1);
+ $('#fDv').textContent=D;$('#fWv').textContent=W;
+ const base=ID/4, withLag=ID*(0.25+lag);
+ $('#fOut').innerHTML=`ID = log₂(${D}/${W} + 1) = <b>${ID.toFixed(2)} bit</b><br>≈ ${base.toFixed(2)} s ${L(['di atas konstanta a (4 bit/s)','above the constant a (4 bits/s)'])}`+(lag?`<br>${L(['dengan lag','with lag'])} ${lag*1000} ms: ≈ ${withLag.toFixed(2)} s (vs ${(ID*0.25).toFixed(2)} s ${L(['tanpa lag','without lag'])})`:'');}
+['#fD','#fW'].forEach(s=>$(s).addEventListener('input',drawFitts));
+$$('#fLag button').forEach(b=>b.addEventListener('click',()=>{lag=+b.dataset.l;$$('#fLag button').forEach(x=>x.setAttribute('aria-pressed',x===b));drawFitts()}));
+hooks.push(drawFitts);
+
+/* sorter */
+const cases=[
+ [["Dashboard punya filter rail 38 provinsi, legend 5 kelas, dan tab bar 4 tab.","The dashboard has a 38-province filter rail, a 5-class legend and a 4-tab bar."],"menu",["Banyak choice set → menambah choice time (Hick–Hyman).","Many choice sets → adds choice time (Hick–Hyman)."]],
+ [["Untuk membandingkan Jawa dan Sulawesi, pembaca harus pindah ke tab lain.","To compare Java and Sulawesi, the reader has to switch to another tab."],"layout",["Perbandingan antar 'ruangan' = corridor walk → beban working memory.","A comparison across 'rooms' = a corridor walk → working-memory load."]],
+ [["Satu chart memakai 13 warna bermakna, border tebal, gradien, dan mark saling tumpang tindih.","One chart uses 13 meaningful colours, heavy borders, gradients and overlapping marks."],"view",["Clutter dalam satu view → search time naik, tak ada salience budget untuk pop-out.","Clutter inside one view → longer search time, no salience budget left for pop-out."]],
+ [["Bar chart dan peta yang dibandingkan diletakkan di pojok berseberangan dengan skala berbeda.","The bar chart and map being compared sit in opposite corners on different scales."],"layout",["Panel tak sejajar & berjauhan → eye-travel distance dan memori.","Unaligned, distant panels → eye-travel distance and memory."]],
+ [["Setiap bar harus dicocokkan warnanya dengan legend 5 entri.","Every bar has to be colour-matched to a 5-entry legend."],"menu",["Legend adalah menu: tiap lookup ≈ log₂(5) ≈ 2,3 bit. Fix: label langsung (C = 1).","A legend is a menu: each lookup ≈ log₂(5) ≈ 2.3 bits. Fix: direct labels (C = 1)."]],
+ [["Peta choropleth 5 bin + donut 4 warna + KPI tile berwarna, sehingga subjek utama tak bisa ditonjolkan.","A 5-bin choropleth + a 4-colour donut + tinted KPI tiles, so the main subject can't be made to stand out."],"view",["Feature congestion: semua channel warna sudah terpakai dekorasi/encoding.","Feature congestion: every colour channel is already spent on decoration/encoding."]]];
+const caseState=cases.map(()=>null);
+function renderCases(){const box=$('#cases');box.innerHTML='';
+ cases.forEach((c,i)=>{const el=document.createElement('div');el.className='case';
+  el.innerHTML=`<p>${L(c[0])}</p><div class="seg">${['layout','menu','view'].map(k=>`<button data-k="${k}">${k[0].toUpperCase()+k.slice(1)}</button>`).join('')}</div><div class="fb" hidden></div>`;
+  const show=pick=>{el.querySelectorAll('button').forEach(x=>x.classList.remove('right','wrong'));
+   const ok=pick===c[1];el.querySelector(`[data-k="${pick}"]`).classList.add(ok?'right':'wrong');if(!ok)el.querySelector(`[data-k="${c[1]}"]`).classList.add('right');
+   const fb=el.querySelector('.fb');fb.hidden=false;fb.className='fb '+(ok?'ok':'no');
+   fb.textContent=(ok?L(['Benar. ','Correct. ']):L(['Belum tepat, jawabannya ','Not quite, the answer is '])+c[1]+'. ')+L(c[2]);};
+  el.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{caseState[i]=b.dataset.k;show(b.dataset.k)}));
+  if(caseState[i])show(caseState[i]);
+  box.appendChild(el);});}
+hooks.push(renderCases);
+
+/* flashcards */
+const cards=[["130 ms",["Reaksi sederhana (satu sinyal yang diharapkan)","Simple reaction (one expected signal)"]],["160 ms",["Biaya tiap bit pilihan (Hick–Hyman, kondisi optimal)","Cost per bit of choice (Hick–Hyman, good conditions)"]],["480 ms",["Tambahan untuk 8 pilihan (3 bit)","Added by 8 options (3 bits)"]],["4 bit/s",["Throughput manusia pada Fitts' law","Human throughput in Fitts' law"]],["≈5 bit",["Contoh Ware: 16 cm ke target 0,5 cm","Ware's example: 16 cm to a 0.5 cm target"]],["3 / s",["Laju eye fixation (rung 1)","Eye-fixation rate (rung 1)"]],["1 / s",["Laju hover query (rung 2)","Hover-query rate (rung 2)"]],["30×",["Batas beda skala multiple windows / inset","Max scale difference for multiple windows / insets"]],["5×",["Skala maksimum fisheye (G10.17)","Max fisheye scale change (G10.17)"]],["3–4× / s",["Laju zoom default (G10.19), transisi < 1 s","Default zoom rate (G10.19), transitions < 1 s"]],["≈30",["Entitas maks node-link statis masih terlacak","Max entities a static node-link stays traceable"]],["24 / 44",["WCAG 2.2 touch target px: AA 24×24, AAA 44×44","WCAG 2.2 touch target px: AA 24×24, AAA 44×44"]],["48 dp",["Material Design touch target (Apple: 44 pt)","Material Design touch target (Apple: 44 pt)"]],[["0,02","0.02"],["Selisih IPM Kaltim 79,39 vs Bali 79,37 → cetak angkanya","IPM gap, Kalimantan Timur 79.39 vs Bali 79.37 → print the numbers"]],["70",["Ambang IPM 'Tinggi' BPS; 5 provinsi di bawahnya","BPS 'Tinggi' IPM threshold; 5 provinces fall below it"]],["51",["Opsi menu Busy Dashboard: 38+5+4+4","Busy Dashboard menu options: 38+5+4+4"]]];
+const flipped=new Set();
+function renderCards(){const fl=$('#flash');fl.innerHTML='';
+ cards.forEach((c,i)=>{const b=document.createElement('button');b.className='fc'+(flipped.has(i)?' flip':'');b.setAttribute('aria-label',L(['Kartu ','Card '])+L(c[0]));
+  b.innerHTML=`<div class="in"><div class="f"><span class="v">${L(c[0])}</span><span class="hint">${L(['ketuk untuk arti','tap for meaning'])}</span></div><div class="b">${L(c[1])}</div></div>`;
+  b.addEventListener('click',()=>{b.classList.toggle('flip');flipped.has(i)?flipped.delete(i):flipped.add(i)});fl.appendChild(b);});}
+hooks.push(renderCards);
+
+/* ===== Kahoot ===== */
+// {q:[id,en], o:[correct, wrong, wrong, wrong] (string or [id,en]), e:[id,en], t:tag}
+const Q=[
+{t:"inti",q:["Di display view-only, apa satu-satunya 'input device'?","In a view-only display, what is the only 'input device'?"],o:[["Mata (eye fixation)","The eye (eye fixation)"],"Mouse",["Layar sentuh","Touch screen"],["Suara","Voice"]],e:["Klaim sesi: saat display tak bisa dioperasikan, mata satu-satunya input.","The session's claim: when a display can't be operated, the eye is the only input."]},
+{t:"inti",q:["Epistemic action (Kirsh & Maglio) adalah tindakan untuk…","An epistemic action (Kirsh & Maglio) is an action taken to…"],o:[["Mengungkap informasi","Uncover information"],["Mengubah data di dunia nyata","Change data in the world"],["Mempercepat rendering","Speed up rendering"],["Menyimpan state aplikasi","Save application state"]],e:["Kita berinteraksi untuk menemukan informasi, bukan mengubah dunia.","We interact to find information, not to change the world."]},
+{t:"inti",q:["Urutan drill-down cost hierarchy dari yang TERMURAH?","The drill-down cost hierarchy, from CHEAPEST?"],o:[["Fixation → Hover → Klik buka/tutup → Layar baru","Fixation → Hover → Click open/close → New screen"],["Hover → Fixation → Layar baru → Klik","Hover → Fixation → New screen → Click"],["Fixation → Klik → Hover → Layar baru","Fixation → Click → Hover → New screen"],["Layar baru → Klik → Hover → Fixation","New screen → Click → Hover → Fixation"]],e:["Ware: fixation (≈3/s), hover (≈1/s), click open/close, new screen (konteks hilang).","Ware: fixation (≈3/s), hover (≈1/s), click open/close, new screen (context lost)."]},
+{t:"angka",q:["Laju eye fixation menurut Ware sekitar…","Ware puts the eye-fixation rate at about…"],o:[["3 per detik","3 per second"],["1 per detik","1 per second"],["10 per detik","10 per second"],["1 tiap beberapa detik","1 every few seconds"]],e:["Fixation ≈3/s; hover ≈1/s.","Fixation ≈3/s; hover ≈1/s."]},
+{t:"angka",q:["Laju hover query sekitar…","The hover-query rate is about…"],o:[["1 per detik","1 per second"],["3 per detik","3 per second"],["5 per detik","5 per second"],["1 per menit","1 per minute"]],e:["Hover ≈1 per detik, lebih lambat dari fixation.","Hover ≈1 per second, slower than fixation."]},
+{t:"inti",q:["Rung tangga biaya mana yang membuat konteks hilang dan membebani working memory?","Which rung of the cost ladder loses context and loads working memory?"],o:[["Klik ke layar baru","Click to a new screen"],"Hover","Eye fixation",["Klik buka/tutup","Click to open/close"]],e:["Rung 4: view asli diganti sehingga konteks hilang.","Rung 4: the original view is replaced, so context is lost."]},
+{t:"hover",q:["Mengapa hover gagal di ponsel?","Why does hover fail on a phone?"],o:[["Tak ada pointer yang bisa diam tanpa memilih","There is no pointer that can rest without selecting"],["Layar ponsel terlalu kecil","Phone screens are too small"],["Browser ponsel memblokir JavaScript","Mobile browsers block JavaScript"],["Ponsel tak mendukung warna","Phones don't support colour"]],e:["Hover butuh pointer yang bisa 'rest' tanpa select. Sentuhan langsung memilih.","Hover needs a pointer that can rest without selecting. A touch selects immediately."]},
+{t:"hover",q:["Dashboard yang menyimpan nilai hanya di tooltip, bagi pembaca ponsel pada dasarnya adalah…","A dashboard that keeps values only in tooltips is, for a phone reader, effectively…"],o:[["Display view-only yang nilainya hilang","A view-only display with the values missing"],["Dashboard yang ideal","An ideal dashboard"],["Display dengan rung 3","A rung-3 display"],["Visualisasi imersif","An immersive visualisation"]],e:["Tanpa hover, nilainya tidak bisa dijangkau sama sekali.","Without hover, the values can't be reached at all."]},
+{t:"loop",q:["Loop interaksi sub-detik yang mudah 'dibunuh' machine lag adalah…","The sub-second loop that machine lag easily wrecks is…"],o:["Manipulation (selection)","Navigation","Problem-solving","Exploration"],e:["Manipulation loop: koordinasi mata–tangan, sub-detik.","Manipulation loop: eye–hand coordination, sub-second."]},
+{t:"loop",q:["Loop yang berkaitan dengan membangun cognitive map (detik–menit)?","Which loop is about building a cognitive map (seconds–minutes)?"],o:["Navigation","Manipulation","Problem-solving","Perception"],e:["Exploration & navigation loop: mencari jalan di ruang data.","Exploration & navigation loop: finding your way through the data space."]},
+{t:"loop",q:["Skala waktu problem-solving loop adalah…","The time scale of the problem-solving loop is…"],o:[["Menit sampai hari","Minutes to days"],["Sub-detik","Sub-second"],["Detik sampai menit","Seconds to minutes"],["Milidetik","Milliseconds"]],e:["Membentuk dan menyempurnakan hipotesis: menit hingga hari.","Forming and refining hypotheses: minutes to days."]},
+{t:"hick",q:["Rumus Hick–Hyman yang benar?","Which is the Hick–Hyman law?"],o:["RT = a + b·log₂(C)","T = a + b·log₂(D/W + 1)","RT = a + b·C","v = W/τ"],e:["Waktu reaksi naik logaritmik terhadap jumlah pilihan C.","Reaction time grows logarithmically with the number of options C."]},
+{t:"hick",q:["Setiap bit pilihan menambah sekitar…","Each bit of choice adds about…"],o:["160 ms","130 ms","480 ms",["1 detik","1 second"]],e:["≈160 ms per bit; 130 ms adalah reaksi sederhana.","≈160 ms per bit; 130 ms is the simple reaction."]},
+{t:"hick",q:["Delapan pilihan setara berapa bit, dan menambah berapa ms?","Eight options equal how many bits, adding how many ms?"],o:["3 bit, ≈480 ms","8 bit, ≈1280 ms","3 bit, ≈160 ms","4 bit, ≈640 ms"],e:["log₂(8) = 3; 3 × 160 ms = 480 ms.","log₂(8) = 3; 3 × 160 ms = 480 ms."]},
+{t:"hick",q:["Yang diujikan dari Hick–Hyman dan Fitts adalah…","What the quiz examines about Hick–Hyman and Fitts is…"],o:[["Bentuk kurvanya","The shape of the curve"],["Nilai konstanta a dan b","The values of the constants a and b"],["Satuan pengukurannya","Their units"],["Tahun publikasinya","Their publication years"]],e:["Dosen: shape, not constants.","The lecturer: shape, not constants."]},
+{t:"hick",q:["Mengapa dashboard tanpa klik tetap punya menu complexity?","Why does a dashboard with nothing to click still have menu complexity?"],o:[["Legend, tab, dan KPI tile adalah choice set","Legends, tabs and KPI tiles are choice sets"],["Karena ada scrollbar","Because it has a scrollbar"],["Karena warnanya terlalu banyak","Because it has too many colours"],["Karena grid-nya tidak rata","Because its grid is irregular"]],e:["Setiap legend adalah menu; pembaca memilih dengan mata.","Every legend is a menu; the reader chooses with the eyes."]},
+{t:"hick",q:["Mengganti legend dengan label langsung pada bar mengubah C menjadi…","Replacing the legend with direct labels on the bars turns C into…"],o:[["1, sehingga log₂(C) = 0","1, so log₂(C) = 0"],["0, sehingga RT = 0","0, so RT = 0"],["2, sehingga 1 bit","2, so 1 bit"],["C tetap, hanya lebih rapi","C unchanged, just tidier"]],e:["C = 1 → tidak ada pilihan yang perlu dibuat.","C = 1 → no choice left to make."]},
+{t:"fitts",q:["Rumus Fitts' law?","Which is Fitts' law?"],o:["T = a + b·log₂(D/W + 1)","RT = a + b·log₂(C)","T = D × W","T = a + b·(D − W)"],e:["D = jarak, W = lebar target.","D = distance, W = target width."]},
+{t:"fitts",q:["Throughput manusia pada Fitts' law sekitar…","Human throughput in Fitts' law is about…"],o:[["4 bit per detik","4 bits per second"],["160 bit per detik","160 bits per second"],["1 bit per detik","1 bit per second"],["30 bit per detik","30 bits per second"]],e:["≈4 bit/s untuk jari, pergelangan, maupun lengan.","≈4 bits/s whether finger, wrist or forearm."]},
+{t:"fitts",q:["Machine lag paling merugikan ketika…","Machine lag hurts most when…"],o:[["Target kecil","Targets are small"],["Target besar","Targets are large"],["Tidak ada target","There is no target"],["Layar gelap","The screen is dark"]],e:["Lag dikalikan dengan index of difficulty, yang besar saat W kecil.","Lag is multiplied by the index of difficulty, which is large when W is small."]},
+{t:"fitts",q:["Dalam rumus Fitts dengan lag, lag muncul sebagai…","In Fitts' law with lag, the lag appears as…"],o:[["Dijumlah dengan HumanTime lalu dikalikan log₂(D/W+1)","Added to HumanTime, then multiplied by log₂(D/W+1)"],["Dikurangkan dari a","Subtracted from a"],["Pembagi D","A divisor of D"],["Tidak berpengaruh","Having no effect"]],e:["T = a + b(HumanTime + MachineLag)·log₂(D/W+1).","T = a + b(HumanTime + MachineLag)·log₂(D/W+1)."]},
+{t:"fitts",q:["'Fix' Fitts untuk dashboard view-only adalah…","The Fitts 'fix' for a view-only dashboard is…"],o:[["Taruh jawaban tempat mata mendarat pertama","Put the answer where the eye lands first"],["Perkecil semua target","Shrink every target"],["Tambah tombol zoom","Add a zoom button"],["Pakai animasi","Use animation"]],e:["Jarak nol ke jawaban = biaya menunjuk nol.","Zero distance to the answer = zero pointing cost."]},
+{t:"memori",q:["Prinsip 'eyes beat memory' (Munzner) menyarankan…","Munzner's 'eyes beat memory' suggests…"],o:[["Sejajarkan yang dibandingkan berdampingan di sumbu sama","Put compared items side by side on a shared axis"],["Pisahkan ke tab berbeda agar rapi","Split them into separate tabs for tidiness"],["Tampilkan lewat tooltip","Show them via tooltips"],["Minta pembaca mengingat nilai","Ask the reader to remember values"]],e:["Perbandingan dalam view = gerakan mata; antar tab = tugas memori.","Comparison in view = an eye movement; across tabs = a memory task."]},
+{t:"memori",q:["Dalam analogi gedung, perbandingan antar panel disebut…","In the building analogy, comparing across panels is a…"],o:[["Corridor walk yang mahal","Costly corridor walk"],["Room scan yang murah","Cheap room scan"],"Pop-out","Brushing"],e:["Dashboard = gedung, panel = ruangan.","Dashboard = building, panel = room."]},
+{t:"memori",q:["Padanan 'you are here' pada dashboard statis adalah…","The static-dashboard equivalent of 'you are here' is…"],o:[["Subjek diberi satu warna aksen, sisanya abu-abu","The subject in one accent colour, everything else grey"],["Menambah peta kecil di pojok","Adding a small map in the corner"],["Menambah legend","Adding a legend"],["Menambah tombol home","Adding a home button"]],e:["Grey + one highlight di semua panel.","Grey + one highlight across every panel."]},
+{t:"fokus",q:["Batas beda skala yang masih bekerja untuk multiple windows (inset)?","The scale difference that still works for multiple windows (insets)?"],o:["≈30×","≈5×","≈3×","≈100×"],e:["Ware G10.16: hingga ≈30×.","Ware G10.16: up to ≈30×."]},
+{t:"fokus",q:["Skala maksimum fisheye menurut Ware (G10.17)?","Ware's maximum fisheye scale change (G10.17)?"],o:["≈5×","≈30×","≈10×","≈2×"],e:["Di atas itu periferi tak terbaca.","Beyond that the periphery becomes unreadable."]},
+{t:"fokus",q:["Laju zoom default menurut G10.19?","The default zoom rate per G10.19?"],o:[["3–4× per detik","3–4× per second"],["30× per detik","30× per second"],["1× per detik","1× per second"],["10× per detik","10× per second"]],e:["Transisi juga sebaiknya di bawah ≈1 detik.","Transitions should also stay under ≈1 second."]},
+{t:"fokus",q:["Teknik focus+context yang lolos aturan 'no interaction' tanpa diubah?","Which focus+context technique survives the 'no interaction' rule unchanged?"],o:["Multiple windows (inset)","Fisheye","Rapid zooming","Brushing"],e:["Inset statis; perbaiki seam dengan proxy + garis penghubung.","Insets are static; fix the seam with a proxy + connecting lines."]},
+{t:"fokus",q:["Kelemahan utama multiple windows (inset)?","The main weakness of multiple windows (insets)?"],o:[["Visual seam antara detail dan konteks","A visual seam between detail and context"],["Merusak bentuk familiar","Breaking familiar shapes"],["Butuh interaksi 3–4×/s","Needing 3–4×/s interaction"],["Memalsukan luas area","Misrepresenting area"]],e:["Distorsi merusak bentuk; inset menciptakan seam.","Distortion breaks shapes; insets create a seam."]},
+{t:"fokus",q:["Padanan view-only terdekat untuk rapid zooming?","The nearest view-only substitute for rapid zooming?"],o:["Small-multiples scale ladder",["Fisheye statis","Static fisheye"],"Tooltip","Dropdown"],e:["Tempat sama di 2–3 skala tetap, berdampingan.","The same place at 2–3 fixed scales, side by side."]},
+{t:"link",q:["Padanan statis untuk brushing / linked views?","The static substitute for brushing / linked views?"],o:[["Consistent identity: urutan, aksen, label sama","Consistent identity: same order, accent, label"],["Tambah legend tiap panel","Add a legend to each panel"],["Warna berbeda tiap panel","A different colour per panel"],["Hapus semua warna","Remove all colour"]],e:["Pembaca menghubungkan view dengan mata (rung 1).","The reader links views by eye (rung 1)."]},
+{t:"link",q:["Padanan statis untuk dynamic queries (slider)?","The static substitute for dynamic queries (sliders)?"],o:[["Pre-filter saat desain, sebut subset di judul","Filter at design time, state the subset in the title"],["Tambah slider palsu","Add a fake slider"],["Tampilkan semua data tanpa judul","Show all data with no title"],["Pakai tooltip","Use tooltips"]],e:["Putuskan subset sebelum menggambar.","Decide the subset before drawing it."]},
+{t:"link",q:["Padanan statis untuk hover tooltip?","The static substitute for a hover tooltip?"],o:["Direct labeling",["Legend besar","A big legend"],["Tab tambahan","An extra tab"],"Fisheye"],e:["Label/nilai langsung pada mark; dot plot untuk near-tie.","Labels/values on the mark; a dot plot for near-ties."]},
+{t:"link",q:["Brushing diperkenalkan oleh…","Brushing was introduced by…"],o:["Becker & Cleveland (1987)","Kirsh & Maglio (1994)","Pirolli & Card","Jacob (1990)"],e:["Select di satu view, highlight di semua view lain.","Select in one view, highlight in every other view."]},
+{t:"komp",q:["Filter rail 38 provinsi, legend 5, dan 4 tab. Ini kompleksitas apa?","A 38-province filter rail, a 5-entry legend and 4 tabs. Which complexity?"],o:[["Menu, menambah choice time","Menu, adds choice time"],["Layout, menambah jarak mata","Layout, adds eye travel"],["View, menambah clutter","View, adds clutter"],["Bukan masalah","Not a problem"]],e:["Choice set banyak → Hick–Hyman.","Many choice sets → Hick–Hyman."]},
+{t:"komp",q:["Membandingkan dua provinsi harus lewat dua tab berbeda. Ini kompleksitas…","Comparing two provinces requires two different tabs. Which complexity?"],o:[["Layout, menambah beban working memory","Layout, adds working-memory load"],["Menu, menambah choice time","Menu, adds choice time"],["View, menambah clutter","View, adds clutter"],["Bukan masalah","Not a problem"]],e:["Corridor walk antar ruangan.","A corridor walk between rooms."]},
+{t:"komp",q:["Satu chart dengan mark overlap, 13 warna, border tebal, gradien. Ini kompleksitas…","One chart with overlapping marks, 13 colours, heavy borders, gradients. Which complexity?"],o:[["View, menambah search time & clutter","View, adds search time & clutter"],["Menu, menambah choice time","Menu, adds choice time"],["Layout, menambah jarak","Layout, adds distance"],["Bukan masalah","Not a problem"]],e:["Kerumitan di dalam satu view.","Complexity inside a single view."]},
+{t:"komp",q:["Panel yang dibandingkan berjauhan, grid tak rata, skala berbeda. Ini kompleksitas…","Compared panels far apart, an irregular grid, different scales. Which complexity?"],o:[["Layout, menambah eye-travel distance","Layout, adds eye-travel distance"],["Menu, menambah choice time","Menu, adds choice time"],["View, menambah clutter","View, adds clutter"],["Bukan masalah","Not a problem"]],e:["Layout complexity mendorong jarak perjalanan mata.","Layout complexity drives how far the eye travels."]},
+{t:"komp",q:["Pembaca harus mencocokkan warna tiap bar ke legend 5 entri. Ini kompleksitas…","The reader must match each bar's colour to a 5-entry legend. Which complexity?"],o:[["Menu, ≈2,3 bit per lookup","Menu, ≈2.3 bits per lookup"],["View, feature congestion","View, feature congestion"],["Layout, corridor walk","Layout, corridor walk"],["Bukan masalah","Not a problem"]],e:["Legend = menu. Fix: label langsung.","Legend = menu. Fix: direct labels."]},
+{t:"komp",q:["Feature congestion (Rosenholtz) mengukur clutter sebagai…","Feature congestion (Rosenholtz) measures clutter as…"],o:[["Sulitnya menambah item baru yang masih menarik perhatian","The difficulty of adding a new item that still attracts attention"],["Jumlah panel di layar","The number of panels on screen"],["Jumlah opsi di legend","The number of legend options"],["Kecepatan rendering","Rendering speed"]],e:["Tak ada salience budget tersisa.","No salience budget left."]},
+{t:"ipm",q:["Pembaca bertanya: 'Lebih tinggi Bali atau Kaltim?' (79,37 vs 79,39), tanpa interaksi. Solusinya?","A reader asks: 'Which is higher, Bali or Kalimantan Timur?' (79.37 vs 79.39), no interaction allowed. What do you do?"],o:[["Cetak kedua nilai di dot plot","Print both values in a dot plot"],["Tooltip dengan nilai persis","A tooltip with the exact value"],["Skala warna peta lebih halus","A finer map colour scale"],["Potong sumbu bar di 79","Cut the bar axis at 79"]],e:["Selisih 0,02 tak terbaca oleh warna/panjang; cetak angkanya.","A 0.02 gap isn't readable by colour or length; print the number."]},
+{t:"ipm",q:["Berapa provinsi dengan IPM di bawah 70 (ambang 'Tinggi' BPS)?","How many provinces have an IPM below 70 (the BPS 'Tinggi' threshold)?"],o:["5","4","6","3"],e:["NTT 69,89; Papua Selatan; Papua Barat; Papua Tengah; Papua Pegunungan.","NTT 69.89; Papua Selatan; Papua Barat; Papua Tengah; Papua Pegunungan."]},
+{t:"ipm",q:["Provinsi dengan IPM terendah 2025?","Which province has the lowest IPM in 2025?"],o:[["Papua Pegunungan (54,91)","Papua Pegunungan (54.91)"],["Papua Tengah (60,64)","Papua Tengah (60.64)"],["NTT (69,89)","NTT (69.89)"],["Papua Barat (68,48)","Papua Barat (68.48)"]],e:["Selisih ke Papua Tengah 5,73 poin.","5.73 points below Papua Tengah."]},
+{t:"aturan",q:["Aturan layout 'Top-left' berarti…","The 'Top-left' layout rule means…"],o:[["Jawaban pertanyaan terbesar di tempat mata mendarat pertama","The main question's answer goes where the eye lands first"],["KPI tile selalu di kiri atas","KPI tiles always go top-left"],["Logo di kiri atas","The logo goes top-left"],["Legend di kiri atas","The legend goes top-left"]],e:["KPI tile bukan default posisi itu.","KPI tiles are not the default there."]},
+{t:"aturan",q:["Aturan 'Budget' pada layout?","The 'Budget' layout rule?"],o:[["Tiap panel harus menjawab pertanyaan unik; kalau tidak, hapus","Each panel must answer a unique question; otherwise remove it"],["Batasi warna ke 3","Limit colours to 3"],["Batasi jumlah tab","Limit the number of tabs"],["Batasi ukuran file","Limit the file size"]],e:["View budget.","View budget."]},
+{t:"aturan",q:["Panel sebaiknya dikelompokkan berdasarkan…","Panels should be grouped by…"],o:[["Tugas / pertanyaan","Task / question"],["Jenis chart","Chart type"],["Warna","Colour"],["Urutan abjad","Alphabetical order"]],e:["Group by task, bukan by chart type (Gestalt).","Group by task, not by chart type (Gestalt)."]},
+{t:"aturan",q:["Rumus penutup materi: Low Menu + Low View + Aligned Layout = …","The closing formula: Low Menu + Low View + Aligned Layout = …"],o:["Answers at a Glance","Interactive Dashboard","Focus + Context","Big Data"],e:["View-only membeli simultanitas dengan layout.","View-only buys simultaneity with layout."]},
+{t:"modal",q:["Minimum touch target WCAG 2.2 level AAA (SC 2.5.5)?","The WCAG 2.2 AAA minimum touch target (SC 2.5.5)?"],o:["44 × 44 CSS px","24 × 24 CSS px","48 × 48 dp","16 × 16 px"],e:["AA (SC 2.5.8) = 24×24; Apple 44 pt; Material 48 dp.","AA (SC 2.5.8) = 24×24; Apple 44 pt; Material 48 dp."]},
+{t:"modal",q:["'Midas touch problem' berkaitan dengan input…","The 'Midas touch problem' belongs to which input?"],o:[["Gaze: melihat ≠ memilih","Gaze: looking ≠ selecting"],["Voice: tak ada pointer","Voice: no pointer"],["Touch: tangan menutupi layar","Touch: the hand covers the screen"],["Gesture: lengan lelah","Gesture: arm fatigue"]],e:["Jacob (1990); butuh konfirmasi visual/pinch.","Jacob (1990); needs confirmation such as a pinch."]},
+{t:"modal",q:["Untuk input voice, setiap item yang mungkin ditanya butuh…","For voice input, every item a reader might ask about needs…"],o:[["Label unik yang bisa diucapkan","A unique, speakable label"],["Target 44×44 px","A 44×44 px target"],"Hover tooltip",["Animasi konfirmasi","A confirmation animation"]],e:["Bolt 'Put-that-there' (1980) memasangkan suara + menunjuk.","Bolt's 'Put-that-there' (1980) paired speech with pointing."]},
+{t:"modal",q:["'Gorilla arm' adalah masalah pada…","'Gorilla arm' is a problem of…"],o:[["Gesture mid-air","Mid-air gesture"],"Voice","Pen","Keyboard"],e:["Tanpa permukaan & haptic, lengan cepat lelah.","No surface & no haptics, so the arm tires quickly."]},
+{t:"link",q:["Interaksi paling tepat dipakai ketika…","Interaction is the right answer when…"],o:[["Data tak muat satu layar di resolusi yang dibutuhkan","The data doesn't fit one screen at the needed resolution"],["Data hanya 10 baris","The data is only 10 rows"],["Pembaca melihat sekali di rapat","The reader sees it once in a meeting"],["Pertanyaan sudah bisa ditebak","The questions are predictable"]],e:["Juga: pertanyaan tak terduga, atau data berubah cepat.","Also: unpredictable questions, or fast-changing data."]},
+{t:"link",q:["Menurut Ware, teknik interaktif paling membantu untuk…","According to Ware, interactive techniques help most with…"],o:[["Ratusan sampai beberapa ribu entitas","Hundreds to a few thousand entities"],["Miliaran baris (big data)","Billions of rows (big data)"],["Maksimal 5 entitas","At most 5 entities"],["Hanya data spasial","Only spatial data"]],e:["Tahap awal big data biasanya query, bukan gambar.","The first stage of big data is usually a query, not a picture."]},
+{t:"loop",q:["Mantra Shneiderman yang benar?","Which is Shneiderman's mantra?"],o:["Overview first, zoom and filter, then details on demand","Details first, then overview","Filter first, overview later","Zoom first, then filter"],e:["Ware: analisis nyata tidak serapi mantra.","Ware: real analysis is less tidy than the mantra."]},
+{t:"inti",q:["Information scent (Pirolli & Card) berarti…","Information scent (Pirolli & Card) means…"],o:[["Label & petunjuk menunjukkan di mana jawaban kemungkinan berada","Labels & cues show where the answer is likely to be"],["Warna yang menarik perhatian","Attention-grabbing colour"],["Aroma ruang kelas","The smell of the classroom"],["Jejak kursor","A cursor trail"]],e:["G10.20.","G10.20."]},
+{t:"fitts",q:["Power law of practice berimplikasi bahwa pembaca dashboard view-only…","The power law of practice implies that a view-only dashboard's reader…"],o:[["Selalu novice di penglihatan pertama","Is always a novice on first viewing"],["Cepat jadi expert","Quickly becomes an expert"],["Tidak perlu label","Doesn't need labels"],["Selalu memakai hover","Always uses hover"]],e:["Tak ada yang berlatih dashboard yang dilihat sekali.","Nobody practises a dashboard they see once."]},
+{t:"fitts",q:["Dalam model dua tangan Guiard, tangan non-dominan…","In Guiard's two-handed model, the non-dominant hand…"],o:[["Menetapkan frame of reference","Sets the frame of reference"],["Mengerjakan detail halus","Does the fine detail"],["Tidak dipakai","Isn't used"],["Mengontrol zoom saja","Only controls zoom"]],e:["Tangan dominan mengerjakan detail (G10.2).","The dominant hand does the detail (G10.2)."]},
+{t:"fitts",q:["Stimulus–response compatibility: sumbu rotasi terbalik butuh adaptasi…","Stimulus–response compatibility: inverted rotation axes take how long to adapt to?"],o:[["Berminggu-minggu","Weeks"],["Beberapa detik","A few seconds"],["Beberapa menit","A few minutes"],["Tidak bisa diadaptasi","It can't be adapted to"]],e:["Offset kecil cukup menit (G10.4).","Small offsets take minutes (G10.4)."]},
+{t:"memori",q:["Studi Thorndyke & Hayes-Roth: belajar peta sebentar setara dengan…","Thorndyke & Hayes-Roth: briefly studying a map matched…"],o:[["≈1 tahun bekerja di gedung itu","≈1 year of working in the building"],["1 hari","1 day"],["1 jam","1 hour"],["10 tahun","10 years"]],e:["Untuk penilaian jarak garis lurus.","For straight-line distance judgements."]}
+];
+const shapes=['<svg viewBox="0 0 32 32"><polygon points="16,4 30,28 2,28"/></svg>','<svg viewBox="0 0 32 32"><polygon points="16,2 30,16 16,30 2,16"/></svg>','<svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="13"/></svg>','<svg viewBox="0 0 32 32"><rect x="4" y="4" width="24" height="24"/></svg>'];
+const stage=$('#stage'); const T=20;
+let cfg={n:12,topic:'all'}, deck=[], idx=0, score=0, correct=0, streak=0, wrong=[], timer=null, t0=0, locked=false, view='start', opts=[], last=null;
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+
+function startScreen(){clearInterval(timer);view='start';
+ stage.innerHTML=`<div class="k-start"><div class="eyebrow">${L(['Kuis 3 · latihan','Quiz 3 · practice'])}</div><h3>${L(['Siap main?','Ready to play?'])}</h3><p>${L([`Bank ${Q.length} soal dari materi minggu 5. Pilih jumlah soal dan fokus topik.`,`A bank of ${Q.length} items from week 5. Pick how many items and a topic focus.`])}</p>
+ <div class="k-set"><span class="eyebrow">${L(['Jumlah soal','Number of items'])}</span><div class="k-seg" id="kN">${[12,20,Q.length].map(n=>`<button data-n="${n}" aria-pressed="${cfg.n==n}">${n==Q.length?L(['Semua','All'])+' ('+n+')':n}</button>`).join('')}</div></div>
+ <div class="k-set"><span class="eyebrow">${L(['Fokus','Focus'])}</span><div class="k-seg" id="kT">${[['all',['Campur','Mixed']],['komp',['Layout / Menu / View','Layout / Menu / View']],['angka',['Angka & hukum','Numbers & laws']]].map(t=>`<button data-t="${t[0]}" aria-pressed="${cfg.topic==t[0]}">${L(t[1])}</button>`).join('')}</div></div>
+ <button class="k-btn" id="kGo">${L(['Mulai ▸','Start ▸'])}</button></div>`;
+ stage.querySelectorAll('#kN button').forEach(b=>b.onclick=()=>{cfg.n=+b.dataset.n;startScreen()});
+ stage.querySelectorAll('#kT button').forEach(b=>b.onclick=()=>{cfg.topic=b.dataset.t;startScreen()});
+ $('#kGo').onclick=begin;}
+function begin(){let pool=Q;
+ if(cfg.topic==='komp')pool=Q.filter(q=>['komp','aturan','memori'].includes(q.t));
+ if(cfg.topic==='angka')pool=Q.filter(q=>['angka','hick','fitts','fokus','modal'].includes(q.t));
+ deck=shuffle(pool).slice(0,Math.min(cfg.n,pool.length));idx=0;score=0;correct=0;streak=0;wrong=[];ask();}
+function ask(){locked=false;view='q';last=null;const q=deck[idx];opts=shuffle(q.o.map((t,i)=>({t,ok:i===0})));
+ stage.innerHTML=`<div class="k-top"><span class="k-pill">${idx+1} / ${deck.length}</span><span class="k-pill clock" id="kClock">${T}</span><span class="k-pill" id="kScore"></span></div>
+ <div class="k-q" id="kQ"></div><div class="k-timer"><i id="kBar"></i></div>
+ <div class="k-opts">${opts.map((o,i)=>`<button class="k-opt c${i}" data-ok="${o.ok}">${shapes[i]}<span></span></button>`).join('')}</div><div id="kRes"></div>`;
+ paintQ();
+ stage.querySelectorAll('.k-opt').forEach(b=>b.onclick=()=>answer(b));
+ t0=performance.now();clearInterval(timer);
+ timer=setInterval(()=>{const el=(performance.now()-t0)/1000,left=Math.max(0,T-el);
+  const bar=$('#kBar');if(bar)bar.style.transform=`scaleX(${left/T})`;const c=$('#kClock');if(c)c.textContent=Math.ceil(left);
+  if(left<=0)answer(null);},100);}
+function paintQ(){const q=deck[idx];
+ $('#kQ').textContent=L(q.q);
+ $('#kScore').textContent=`${score} ${L(['poin','pts'])}${streak>1?' · 🔥'+streak:''}`;
+ stage.querySelectorAll('.k-opt span').forEach((s,i)=>s.textContent=L(opts[i].t));
+ if(last)paintRes();}
+function answer(btn){if(locked)return;locked=true;clearInterval(timer);
+ const q=deck[idx],el=(performance.now()-t0)/1000,ok=btn&&btn.dataset.ok==='true';
+ stage.querySelectorAll('.k-opt').forEach(b=>{b.disabled=true;if(b.dataset.ok==='true')b.classList.add('correct');else b.classList.add('dim')});
+ let pts=0;if(ok){streak++;pts=Math.round(1000*(1-(Math.min(el,T)/T)/2));pts+=streak>1?Math.min(500,100*(streak-1)):0;score+=pts;correct++;}else{streak=0;wrong.push(q);}
+ last={cls:ok?'ok':(btn?'no':'late'),pts};paintRes();
+ $('#kScore').textContent=`${score} ${L(['poin','pts'])}${streak>1?' · 🔥'+streak:''}`;
+ $('#kNext').focus();}
+function paintRes(){const q=deck[idx],{cls,pts}=last;
+ const head=cls==='ok'?L(['Benar!','Correct!'])+` +${pts}`:cls==='no'?L(['Salah','Wrong']):L(['Waktu habis',"Time's up"]);
+ $('#kRes').innerHTML=`<div class="k-res ${cls}"><div class="h">${head}</div><div>${L(['Jawaban','Answer'])}: <b>${L(q.o[0])}</b>. ${L(q.e)}</div></div>
+ <div class="k-row" style="margin-top:12px"><button class="k-btn" id="kNext">${idx+1<deck.length?L(['Soal berikutnya ▸','Next question ▸']):L(['Lihat hasil ▸','See results ▸'])}</button></div>`;
+ $('#kNext').onclick=()=>{idx++;idx<deck.length?ask():finish()};}
+function finish(){view='end';const pct=Math.round(correct/deck.length*100);
+ stage.innerHTML=`<div class="k-start"><div class="eyebrow">${L(['Hasil','Results'])}</div><div class="k-score">${score}</div><p>${L([`${correct} dari ${deck.length} benar (${pct}%).`,`${correct} of ${deck.length} correct (${pct}%).`])} ${pct>=85?L(['Siap untuk Kahoot.','Ready for the Kahoot.']):pct>=60?L(['Sudah lumayan, ulangi bagian yang salah.','Not bad; go over the ones you missed.']):L(['Baca ulang rangkuman di atas lalu coba lagi.','Reread the summary above and try again.'])}</p>
+ ${wrong.length?`<div class="review"><div class="eyebrow">${L(['Perlu diulang','Review these'])}</div>${wrong.map(q=>`<div class="it">${L(q.q)}<br>→ <b>${L(q.o[0])}</b></div>`).join('')}</div>`:''}
+ <div class="k-row" style="justify-content:center"><button class="k-btn" id="kAgain">${L(['Main lagi','Play again'])}</button><button class="k-btn ghost" id="kMenu">${L(['Ganti pengaturan','Change settings'])}</button></div></div>`;
+ $('#kAgain').onclick=begin;$('#kMenu').onclick=startScreen;}
+hooks.push(()=>{if(view==='start')startScreen();else if(view==='q')paintQ();else finish();});
+
+/* language switch */
+function setLang(l,save){lang=l==='en'?'en':'id';
+ document.documentElement.setAttribute('data-lang',lang);
+ document.documentElement.setAttribute('lang',lang);
+ $$('[data-set-lang]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.setLang===lang));
+ document.title=lang==='en'?'Quiz 3 Infovis · The Price of Interaction':'Kuis 3 Infovis · Harga Interaksi';
+ if(save){try{localStorage.setItem('kuis3-lang',lang)}catch(e){}}
+ hooks.forEach(f=>f());}
+$$('[data-set-lang]').forEach(b=>b.addEventListener('click',()=>setLang(b.dataset.setLang,true)));
+let initial='id';try{initial=localStorage.getItem('kuis3-lang')||'id'}catch(e){}
+if(location.hash==='#en')initial='en';if(location.hash==='#id')initial='id';
+setLang(initial,false);
+
+const prog=$('#prog');const onScroll=()=>{const h=document.documentElement.scrollHeight-innerHeight;prog.style.transform=`scaleX(${h>0?Math.min(1,scrollY/h):0})`};addEventListener('scroll',onScroll,{passive:true});onScroll();
+})();
+</script>
+
+</body></html>

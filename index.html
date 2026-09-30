@@ -124,7 +124,8 @@ td:first-child{font-weight:600}
 /* complexity */
 .gauge-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 @media (max-width:560px){.gauge-row{grid-template-columns:1fr}}
-.gauge{border:1px solid var(--line);padding:22px;background:var(--panel);box-shadow:var(--lift);display:grid;gap:6px}
+.gauge{border:1px solid var(--line);padding:22px;background:var(--panel);box-shadow:var(--lift);display:grid;gap:6px;align-content:start}
+.gauge-key{font-size:13px;color:var(--ink-soft)}
 .gauge .big{font-family:var(--display);font-weight:800;font-size:38px;line-height:1;letter-spacing:-.02em;color:var(--ink)}
 .gauge .arrow{font-size:13px;color:var(--green);font-weight:600}
 .sorter{display:grid;gap:12px}
@@ -203,6 +204,17 @@ td:first-child{font-weight:600}
 .eli .eyebrow{color:var(--gold)}
 .eli ul{margin:0;padding-left:20px;display:grid;gap:5px}
 .eli .ex{font-family:var(--mono);font-size:13.5px;background:var(--canvas);border:1px solid #EBD7A8;padding:8px 10px;overflow-x:auto}
+
+/* cheatsheet */
+.cheat{background:var(--canvas);border:1px solid var(--line);border-top:3px solid var(--ink);box-shadow:var(--lift);padding:20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px 22px}
+.cs{display:grid;gap:6px;align-content:start;min-width:0}
+.cs h4{margin:0;font-family:var(--display);font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);border-bottom:1px solid var(--line);padding-bottom:5px}
+.cs dl{margin:0;display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 10px;font-size:14px;line-height:1.4}
+.cs dt{font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.cs dd{margin:0;color:var(--ink-soft)}
+.cs .f{font-family:var(--mono);font-size:13px;background:var(--panel);padding:6px 8px;overflow-x:auto}
+.cs.wide{grid-column:1/-1}
+.cs .trap{background:var(--bad-soft);border-left:3px solid var(--red);padding:8px 10px;font-size:14px}
 </style>
 
 <div class="progress" aria-hidden="true"><i id="prog"></i></div>
@@ -226,7 +238,7 @@ td:first-child{font-weight:600}
 </header>
 
 <nav class="jump" aria-label="Sections">
-  <a href="#inti"><span lang="id">Ide inti</span><span lang="en">Key idea</span></a><a href="#loop"><span lang="id">3 loop</span><span lang="en">3 loops</span></a><a href="#hick">Hick–Hyman</a><a href="#fitts">Fitts</a><a href="#memori">Eyes beat memory</a><a href="#fokus">Focus+context</a><a href="#linking">Brushing</a><a href="#kompleks"><span lang="id">3 kompleksitas</span><span lang="en">3 complexities</span></a><a href="#aturan"><span lang="id">Aturan layout</span><span lang="en">Layout rules</span></a><a href="#modal">Multimodal</a><a href="#angka"><span lang="id">Angka wajib</span><span lang="en">Key numbers</span></a><a href="#latihan" class="go"><span lang="id">Latihan Kahoot ▸</span><span lang="en">Kahoot practice ▸</span></a>
+  <a href="#inti"><span lang="id">Ide inti</span><span lang="en">Key idea</span></a><a href="#loop"><span lang="id">3 loop</span><span lang="en">3 loops</span></a><a href="#hick">Hick–Hyman</a><a href="#fitts">Fitts</a><a href="#memori">Eyes beat memory</a><a href="#fokus">Focus+context</a><a href="#linking">Brushing</a><a href="#kompleks"><span lang="id">3 kompleksitas</span><span lang="en">3 complexities</span></a><a href="#aturan"><span lang="id">Aturan layout</span><span lang="en">Layout rules</span></a><a href="#modal">Multimodal</a><a href="#angka"><span lang="id">Angka wajib</span><span lang="en">Key numbers</span></a><a href="#cheat">Cheatsheet</a><a href="#latihan" class="go"><span lang="id">Latihan Kahoot ▸</span><span lang="en">Kahoot practice ▸</span></a>
 </nav>
 
 <!-- 1 -->
@@ -427,12 +439,13 @@ td:first-child{font-weight:600}
 <!-- 8 -->
 <section class="sec" id="kompleks">
   <div class="sec-head"><div class="eyebrow"><span lang="id">D · Apa yang bisa ditemukan pembaca · pasti keluar ≥3 soal</span><span lang="en">D · What a viewer can locate · at least 3 quiz items</span></div><h2><span lang="id">Tiga sumber kompleksitas</span><span lang="en">Three sources of complexity</span></h2></div>
+  <p class="gauge-key"><span lang="id">Cara baca angka di bawah: <b>Busy Dashboard → setelah diperbaiki</b>. Makin kecil makin ringan beban pembaca.</span><span lang="en">How to read the numbers: <b>Busy Dashboard → after the repair</b>. Smaller means a lighter load on the reader.</span></p>
   <div class="gauge-row">
-    <div class="gauge"><div class="eyebrow">Layout complexity</div><div class="big">10 → 5</div><div class="arrow"><span lang="id">panel di layar</span><span lang="en">panels on screen</span></div><p><span lang="id">Jumlah panel, grid tak rata, jarak panel terkait, skala tak sejajar. <b>Mendorong jarak eye-travel &amp; corridor walk (+ working memory).</b></span><span lang="en">Number of panels, irregular grid, distance between related panels, unaligned scales. <b>Drives eye-travel distance &amp; corridor walks (+ working memory).</b></span></p></div>
+    <div class="gauge"><div class="eyebrow">Layout complexity</div><div class="big">10 → 8</div><div class="arrow"><span lang="id">panel di layar</span><span lang="en">panels on screen</span></div><p><span lang="id">Jumlah panel, grid tak rata, jarak panel terkait, skala tak sejajar. <b>Mendorong jarak eye-travel &amp; corridor walk (+ working memory).</b></span><span lang="en">Number of panels, irregular grid, distance between related panels, unaligned scales. <b>Drives eye-travel distance &amp; corridor walks (+ working memory).</b></span></p></div>
     <div class="gauge"><div class="eyebrow">Menu complexity</div><div class="big">51 → 4</div><div class="arrow"><span lang="id">opsi di choice set</span><span lang="en">options in choice sets</span></div><p><span lang="id">Legend, tab, filter, KPI tile, dropdown. <b>Mendorong choice time</b> (Hick–Hyman).</span><span lang="en">Legends, tabs, filters, KPI tiles, drop-downs. <b>Drives choice time</b> (Hick–Hyman).</span></p></div>
     <div class="gauge"><div class="eyebrow">View complexity</div><div class="big">13 → 3</div><div class="arrow"><span lang="id">warna bermakna</span><span lang="en">colours carrying meaning</span></div><p><span lang="id">Jumlah mark, encoding, warna, lapisan overlap, non-data ink dalam satu view. <b>Mendorong search time &amp; clutter.</b></span><span lang="en">Number of marks, encodings, colours, overlapping layers and non-data ink inside one view. <b>Drives search time &amp; clutter.</b></span></p></div>
   </div>
-  <p class="src"><span lang="id">Angka Busy Dashboard: menu = filter 38 + legend 5 + tabs 4 + KPI 4 = 51. Setelah diperbaiki: tinggal 4 KPI; legend jadi label langsung + satu ramp.</span><span lang="en">Busy Dashboard counts: menu = filter 38 + legend 5 + tabs 4 + KPI 4 = 51. After the repair: only the 4 KPIs remain; the legend became direct labels and one ramp.</span></p>
+  <p class="src"><span lang="id">Angka Busy Dashboard: menu = filter 38 + legend 5 + tabs 4 + KPI 4 = 51. Setelah diperbaiki: tinggal 4 KPI; legend jadi label langsung + satu ramp. Layout 10 panel (tab, filter rail, 4 KPI, peta, legend, donut, bar) → 8 panel (4 KPI, peta, inset Jawa, dot plot, bar). View 13 warna (5 bin peta + 4 donut + 4 tint KPI) → 3 (satu ramp, abu-abu, satu aksen).</span><span lang="en">Busy Dashboard counts: menu = filter 38 + legend 5 + tabs 4 + KPI 4 = 51. After the repair: only the 4 KPIs remain; the legend became direct labels and one ramp. Layout 10 panels (tabs, filter rail, 4 KPIs, map, legend, donut, bars) → 8 panels (4 KPIs, map, Java inset, dot plot, bars). View 13 colours (5 map bins + 4 donut + 4 KPI tints) → 3 (one ramp, grey, one accent).</span></p>
   <div class="card"><div class="tag"><span lang="id">Clutter bisa diukur</span><span lang="en">Clutter can be measured</span></div><p><span lang="id"><b>Feature congestion</b> (Rosenholtz dkk.): clutter = sulitnya menambah item baru yang masih bisa menarik perhatian. Tiap channel yang dipakai untuk dekorasi (tile berwarna, border tebal, ikon, gradien) tak bisa lagi dipakai data untuk pop-out. Cukup tahu nama &amp; idenya.</span><span lang="en"><b>Feature congestion</b> (Rosenholtz et al.): clutter = the difficulty of adding a new item that would still attract attention. Every channel spent on decoration (tinted tiles, heavy borders, icons, gradients) is one the data can no longer use to pop out. Know the name and the idea; no need to compute it.</span></p></div>
   <div class="sheet sorter" id="sorter">
     <div class="prose"><h3><span lang="id">Cek cepat: ini kegagalan layout, menu, atau view?</span><span lang="en">Quick check: is this a layout, menu or view failure?</span></h3><p class="src"><span lang="id">Format soal persis seperti yang dijanjikan dosen di Kahoot.</span><span lang="en">The exact item format the lecturer announced for the Kahoot.</span></p></div>
@@ -488,6 +501,80 @@ td:first-child{font-weight:600}
 <section class="sec" id="angka">
   <div class="sec-head"><div class="eyebrow"><span lang="id">Hafalan</span><span lang="en">Memorise</span></div><h2><span lang="id">Angka yang sering jadi jebakan</span><span lang="en">Numbers that make good trick questions</span></h2><p class="src"><span lang="id">Ketuk kartu untuk membalik.</span><span lang="en">Tap a card to flip it.</span></p></div>
   <div class="flash" id="flash"></div>
+</section>
+
+<!-- CHEATSHEET -->
+<section class="sec" id="cheat">
+  <div class="sec-head"><div class="eyebrow"><span lang="id">Satu layar sebelum kuis</span><span lang="en">One screen before the quiz</span></div><h2>Cheatsheet</h2></div>
+  <div class="cheat">
+    <div class="cs"><h4><span lang="id">Tangga biaya (termurah → termahal)</span><span lang="en">Cost ladder (cheapest → dearest)</span></h4><dl>
+      <dt>1</dt><dd>Eye fixation · ≈3/s</dd>
+      <dt>2</dt><dd>Hover · ≈1/s · <span lang="id">tak ada di ponsel</span><span lang="en">none on phones</span></dd>
+      <dt>3</dt><dd><span lang="id">Klik buka/tutup · tiap beberapa detik</span><span lang="en">Click open/close · every few s</span></dd>
+      <dt>4</dt><dd><span lang="id">Layar baru · konteks hilang</span><span lang="en">New screen · context lost</span></dd></dl>
+      <p class="src"><span lang="id">View-only = hanya rung 1. Mata = satu-satunya input.</span><span lang="en">View-only = rung 1 only. The eye is the only input.</span></p></div>
+
+    <div class="cs"><h4><span lang="id">Tiga loop</span><span lang="en">Three loops</span></h4><dl>
+      <dt>Manipulation</dt><dd><span lang="id">sub-detik · lag merusak</span><span lang="en">sub-second · lag wrecks it</span></dd>
+      <dt>Navigation</dt><dd><span lang="id">detik–menit · cognitive map</span><span lang="en">seconds–minutes · cognitive map</span></dd>
+      <dt>Problem-solving</dt><dd><span lang="id">menit–hari · hipotesis (Bab 11)</span><span lang="en">minutes–days · hypotheses (Ch. 11)</span></dd></dl>
+      <p class="src">Shneiderman: overview → zoom &amp; filter → details on demand</p></div>
+
+    <div class="cs"><h4>Hick–Hyman (<span lang="id">memilih</span><span lang="en">choosing</span>)</h4>
+      <div class="f">RT = a + b·log₂(C)</div><dl>
+      <dt>130 ms</dt><dd><span lang="id">reaksi sederhana</span><span lang="en">simple reaction</span></dd>
+      <dt>160 ms</dt><dd><span lang="id">per bit</span><span lang="en">per bit</span></dd>
+      <dt>8 → 3 bit</dt><dd>+480 ms</dd>
+      <dt>C = 1</dt><dd><span lang="id">label langsung → 0 bit</span><span lang="en">direct label → 0 bits</span></dd></dl>
+      <p class="src"><span lang="id">Legend = menu. Diuji bentuk kurva, bukan konstanta.</span><span lang="en">Legend = menu. Shape is tested, not constants.</span></p></div>
+
+    <div class="cs"><h4>Fitts (<span lang="id">menunjuk</span><span lang="en">pointing</span>)</h4>
+      <div class="f">T = a + b·log₂(D/W + 1)</div><dl>
+      <dt>4 bit/s</dt><dd><span lang="id">throughput manusia</span><span lang="en">human throughput</span></dd>
+      <dt>16/0,5 cm</dt><dd>≈5 bit ≈ 1,25 s</dd>
+      <dt>Lag</dt><dd><span lang="id">(Human + Lag) × ID → parah di target kecil, VR</span><span lang="en">(Human + Lag) × ID → worst on small targets, VR</span></dd></dl>
+      <p class="src"><span lang="id">Steering v = W/τ · Guiard: non-dominan = frame · practice: novice cepat, expert lambat</span><span lang="en">Steering v = W/τ · Guiard: non-dominant = frame · practice: novices fast, experts slow</span></p></div>
+
+    <div class="cs"><h4>Focus + context</h4><dl>
+      <dt>Inset ≤30×</dt><dd><span lang="id">tanpa distorsi, ada seam → proxy + garis · lolos no-interaction</span><span lang="en">no distortion, a seam → proxy + lines · survives no-interaction</span></dd>
+      <dt>Fisheye ≤5×</dt><dd><span lang="id">bentuk rusak, luas palsu</span><span lang="en">shapes break, area lies</span></dd>
+      <dt>Zoom 3–4×/s</dt><dd><span lang="id">transisi &lt;1 s · statis: scale ladder</span><span lang="en">transition &lt;1 s · static: scale ladder</span></dd></dl></div>
+
+    <div class="cs"><h4><span lang="id">Interaktif → view-only</span><span lang="en">Interactive → view-only</span></h4><dl>
+      <dt>Brushing</dt><dd>consistent identity</dd>
+      <dt>Dyn. query</dt><dd><span lang="id">pre-filter + judul</span><span lang="en">pre-filter + title</span></dd>
+      <dt>Hover</dt><dd>direct label / dot plot</dd>
+      <dt>DOI</dt><dd>grey + one highlight</dd>
+      <dt>Constellation</dt><dd><span lang="id">agregasi / small multiples (≈30 entitas)</span><span lang="en">aggregate / small multiples (≈30 entities)</span></dd></dl>
+      <p class="src"><span lang="id">Interaksi layak: ratusan–ribuan entitas, tak muat 1 layar.</span><span lang="en">Interaction pays off: hundreds–thousands of entities, won't fit one screen.</span></p></div>
+
+    <div class="cs wide"><h4><span lang="id">Layout · Menu · View (≥3 soal)</span><span lang="en">Layout · Menu · View (≥3 items)</span></h4><dl>
+      <dt>Layout</dt><dd><span lang="id"><b>antar panel</b>: jumlah panel, jarak, grid tak rata, skala tak sejajar, beda tab → <b>eye travel + working memory</b> (corridor walk)</span><span lang="en"><b>across panels</b>: panel count, distance, irregular grid, unaligned scales, separate tabs → <b>eye travel + working memory</b> (corridor walk)</span></dd>
+      <dt>Menu</dt><dd><span lang="id"><b>choice set</b>: legend, tab, filter, KPI tile, dropdown → <b>choice time</b> (Hick–Hyman)</span><span lang="en"><b>choice sets</b>: legends, tabs, filters, KPI tiles, drop-downs → <b>choice time</b> (Hick–Hyman)</span></dd>
+      <dt>View</dt><dd><span lang="id"><b>di dalam satu panel</b>: mark, warna, overlap, dekorasi → <b>search time + clutter</b> (feature congestion)</span><span lang="en"><b>inside one panel</b>: marks, colours, overlap, decoration → <b>search time + clutter</b> (feature congestion)</span></dd></dl>
+      <p class="src"><span lang="id">Dashboard = gedung, panel = ruangan. Busy Dashboard → diperbaiki: panel 10 → 8 · opsi menu 51 → 4 · warna 13 → 3.</span><span lang="en">Dashboard = building, panel = room. Busy Dashboard → repaired: panels 10 → 8 · menu options 51 → 4 · colours 13 → 3.</span></p></div>
+
+    <div class="cs"><h4><span lang="id">5 aturan layout</span><span lang="en">5 layout rules</span></h4><dl>
+      <dt>01</dt><dd><span lang="id">Top-left = jawaban utama</span><span lang="en">Top-left = main answer</span></dd>
+      <dt>02</dt><dd><span lang="id">Align sumbu &amp; skala</span><span lang="en">Align axis &amp; scale</span></dd>
+      <dt>03</dt><dd><span lang="id">Group by task</span><span lang="en">Group by task</span></dd>
+      <dt>04</dt><dd><span lang="id">Identity konstan</span><span lang="en">Constant identity</span></dd>
+      <dt>05</dt><dd><span lang="id">Budget: panel tanpa tugas unik → hapus</span><span lang="en">Budget: no unique job → remove</span></dd></dl></div>
+
+    <div class="cs"><h4>Multimodal</h4><dl>
+      <dt>Touch</dt><dd><span lang="id">no hover, occlusion · 24 (AA) / 44 (AAA) px · Apple 44 pt · Material 48 dp</span><span lang="en">no hover, occlusion · 24 (AA) / 44 (AAA) px · Apple 44 pt · Material 48 dp</span></dd>
+      <dt>Voice</dt><dd><span lang="id">label unik diucapkan · Bolt 1980</span><span lang="en">unique speakable label · Bolt 1980</span></dd>
+      <dt>Gaze</dt><dd>Midas touch · Jacob 1990</dd>
+      <dt>Gesture</dt><dd>gorilla arm</dd></dl></div>
+
+    <div class="cs"><h4><span lang="id">Data IPM (BPS 2025)</span><span lang="en">IPM data (BPS 2025)</span></h4><dl>
+      <dt><span lang="id">Terendah</span><span lang="en">Lowest</span></dt><dd><span lang="id">Papua Pegunungan 54,91 (−5,73 dari Papua Tengah)</span><span lang="en">Papua Pegunungan 54.91 (−5.73 vs Papua Tengah)</span></dd>
+      <dt>&lt; 70</dt><dd><span lang="id">5 provinsi (NTT 69,89 nyaris)</span><span lang="en">5 provinces (NTT 69.89 just under)</span></dd>
+      <dt><span lang="id">Near-tie</span><span lang="en">Near-tie</span></dt><dd><span lang="id">Kaltim 79,39 vs Bali 79,37 → cetak angka</span><span lang="en">Kaltim 79.39 vs Bali 79.37 → print numbers</span></dd></dl></div>
+
+    <div class="cs wide"><h4><span lang="id">Jebakan umum</span><span lang="en">Common traps</span></h4>
+      <p class="trap"><span lang="id">130 ms = reaksi sederhana, <b>160 ms = per bit</b>. · 30× = inset, <b>5× = fisheye</b>. · Fixation 3/s, <b>hover 1/s</b>. · Near-tie: jawabannya <b>cetak angka</b>, bukan tooltip, bukan skala warna lebih halus, bukan potong sumbu. · Filter &amp; zoom tidak ada di tangga asli Ware; hanya fixation, hover, click, new screen.</span><span lang="en">130 ms = simple reaction, <b>160 ms = per bit</b>. · 30× = inset, <b>5× = fisheye</b>. · Fixation 3/s, <b>hover 1/s</b>. · Near-tie: the answer is <b>print the number</b>, not a tooltip, a finer colour scale or a cut axis. · Filter &amp; zoom are not on Ware's original ladder; it has only fixation, hover, click, new screen.</span></p></div>
+  </div>
 </section>
 
 <!-- QUIZ -->
